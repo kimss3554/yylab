@@ -3000,7 +3000,7 @@ SCHOOLS.forEach(s=>{
 });
 
 /* ===================== RANK CHART ===================== */
-new Chart(document.getElementById('rankChart'),{
+try{new Chart(document.getElementById('rankChart'),{
   type:'bar',
   data:{
     labels:SCHOOLS.slice().sort((a,b)=>RANK[b]-RANK[a]),
@@ -3017,10 +3017,11 @@ new Chart(document.getElementById('rankChart'),{
     scales:{x:{min:60,max:82,ticks:{color:'#6B6B6B'},grid:{color:'#E5DDD0'}},
             y:{ticks:{color:'#2A2A2A',font:{weight:'600'}},grid:{display:false}}}
   }
-});
+});}catch(e){console.warn('rankChart error:',e);}
 
 /* ===================== 학생 현황 차트 ===================== */
 (function initStatsCharts(){
+  try{
   const navy='#1C3D6B', amber='#C8830A', teal='#0D9488';
   const tickC='#2A2A2A', gridC='#E5DDD0', mutedC='#6B6B6B';
   const baseOpts=(unit,xMin,xMax)=>({
@@ -3032,35 +3033,8 @@ new Chart(document.getElementById('rankChart'),{
     }
   });
 
-  /* ── 1. 전체 학생수 (많은 순) ── */
+  /* ── 1. 학년별 누적 막대 ── */
   const sTotalSorted = SCHOOLS.slice().sort((a,b)=>STU_DATA[b].total-STU_DATA[a].total);
-  new Chart(document.getElementById('stuTotalChart'),{
-    type:'bar',
-    data:{
-      labels: sTotalSorted,
-      datasets:[{
-        data: sTotalSorted.map(s=>STU_DATA[s].total),
-        backgroundColor: sTotalSorted.map(s=>SCHOOL_COLORS[s]+'CC'),
-        borderColor: sTotalSorted.map(s=>SCHOOL_COLORS[s]),
-        borderWidth:1, borderRadius:5, barThickness:22
-      }]
-    },
-    options:{
-      ...baseOpts('명', 0, 800),
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{
-          label:c=>{
-            const s=sTotalSorted[c.dataIndex];
-            const d=STU_DATA[s];
-            return [`전체 ${d.total}명`, `1학년 ${d.g1}명 · 2학년 ${d.g2}명 · 3학년 ${d.g3}명`];
-          }
-        }}
-      }
-    }
-  });
-
-  /* ── 2. 학년별 누적 막대 ── */
   new Chart(document.getElementById('stuGradeChart'),{
     type:'bar',
     data:{
@@ -3114,32 +3088,7 @@ new Chart(document.getElementById('rankChart'),{
     }
   });
 
-  /* ── 4. 교원 1인당 학생수 (적은 순) ── */
-  const sTeachSorted = SCHOOLS.slice().sort((a,b)=>STU_DATA[a].stuPerTeacher-STU_DATA[b].stuPerTeacher);
-  const avgTeach = Math.round(SCHOOLS.reduce((s,k)=>s+STU_DATA[k].stuPerTeacher,0)/SCHOOLS.length*10)/10;
-  new Chart(document.getElementById('teacherChart'),{
-    type:'bar',
-    data:{
-      labels: sTeachSorted,
-      datasets:[{
-        data: sTeachSorted.map(s=>STU_DATA[s].stuPerTeacher),
-        backgroundColor: sTeachSorted.map(s=>STU_DATA[s].stuPerTeacher<avgTeach?teal+'CC':navy+'99'),
-        borderColor: sTeachSorted.map(s=>STU_DATA[s].stuPerTeacher<avgTeach?teal:navy),
-        borderWidth:1, borderRadius:5, barThickness:22
-      }]
-    },
-    options:{
-      ...baseOpts('명/교원', 0, 15),
-      plugins:{
-        legend:{display:false},
-        annotation:{annotations:{avg:{type:'line',scaleID:'x',value:avgTeach,borderColor:amber,borderWidth:2,borderDash:[5,4],
-          label:{content:'관악구 평균 '+avgTeach+'명',display:true,position:'end',font:{size:12},color:amber,backgroundColor:'rgba(255,255,255,.85)'}}}},
-        tooltip:{callbacks:{label:c=>`${c.parsed.x}명/교원 (관악구 평균 ${avgTeach}명)`}}
-      }
-    }
-  });
-
-  /* ── 5. 4년제 진학률 (높은 순) ── */
+  /* ── 4. 4년제 진학률 (높은 순) ── */
   const sCareerSorted = SCHOOLS.slice().sort((a,b)=>ADV_RATE[b]-ADV_RATE[a]);
   new Chart(document.getElementById('careerBarChart'),{
     type:'bar',
@@ -3160,6 +3109,7 @@ new Chart(document.getElementById('rankChart'),{
       }
     }
   });
+  }catch(e){console.warn('Stats charts error:',e);}
 })();
 
 /* ---- 탭 전환 ---- */
@@ -3359,14 +3309,14 @@ function drawTrend(){
     trendChart.update();
     return;
   }
-  trendChart=new Chart(document.getElementById('trendChart'),{
+  try{trendChart=new Chart(document.getElementById('trendChart'),{
     type:'line',
     data:{labels:activeYears,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11},color:'#2A2A2A'}}},
       scales:{y:{min:50,max:90,ticks:{color:'#6B6B6B'},grid:{color:'#E5DDD0'}},
               x:{ticks:{color:'#2A2A2A'},grid:{display:false}}}}
-  });
+  });}catch(e){console.warn('trendChart error:',e);}
 }
 document.querySelectorAll('#trendTabs button').forEach(b=>{
   b.addEventListener('click',()=>{
@@ -3432,7 +3382,7 @@ function renderModalRadar(s, year){
   const useData=myData&&myData.some(v=>v!=null)?myData:RADAR[s];
   const useRef=refData&&refData.some(v=>v!=null)?refData:RADAR[refSchool];
   if(radarChart)radarChart.destroy();
-  radarChart=new Chart(document.getElementById('radarChart'),{
+  try{radarChart=new Chart(document.getElementById('radarChart'),{
     type:'radar',
     data:{labels:RADAR_LABELS,datasets:[
       {label:refSchool+' (관악구 최고)',data:useRef,borderColor:'#888888',backgroundColor:'rgba(120,120,120,0.10)',borderWidth:1.5,pointRadius:2,borderDash:[4,3]},
@@ -3442,7 +3392,7 @@ function renderModalRadar(s, year){
       plugins:{legend:{position:'bottom',labels:{color:'#1A2333',boxWidth:13,font:{size:13}}}},
       scales:{r:{min:50,max:90,ticks:{stepSize:10,color:'#5A6A85',backdropColor:'transparent'},
         grid:{color:'#DDE4F0'},pointLabels:{color:'#1A2333',font:{size:13}}}}}
-  });
+  });}catch(e){console.warn('radarChart error:',e);}
   const titleEl=document.getElementById('radarSectTitle');
   const gradeLabel=year==='all'?'전체 (2025 기준)':year==='2025'?'현 고1':year==='2024'?'현 고2':'현 고3';
   if(titleEl)titleEl.textContent='교과 성취도 레이더 — '+gradeLabel;
@@ -3653,7 +3603,7 @@ window.runCompareAnalysis=function(){
 
   // 레이더 차트
   if(_cmpCharts.radar)_cmpCharts.radar.destroy();
-  _cmpCharts.radar=new Chart(document.getElementById('cmpRadarChart'),{
+  try{_cmpCharts.radar=new Chart(document.getElementById('cmpRadarChart'),{
     type:'radar',
     data:{labels:RADAR_LABELS,datasets:[
       {label:sA,data:dA||RADAR[sA],borderColor:'#1E40AF',backgroundColor:'#1E40AF22',borderWidth:2,pointRadius:3},
@@ -3663,11 +3613,11 @@ window.runCompareAnalysis=function(){
       plugins:{legend:{position:'bottom',labels:{color:'#2A2A2A',boxWidth:12,font:{size:13}}}},
       scales:{r:{min:50,max:90,ticks:{stepSize:10,color:'#6B6B6B',backdropColor:'transparent'},
         grid:{color:'#DDE4F0'},pointLabels:{color:'#1A2333',font:{size:13}}}}}
-  });
+  });}catch(e){console.warn('cmpRadarChart error:',e);}
 
   // 과목별 가로 막대 비교
   if(_cmpCharts.bar)_cmpCharts.bar.destroy();
-  _cmpCharts.bar=new Chart(document.getElementById('cmpBarChart'),{
+  try{_cmpCharts.bar=new Chart(document.getElementById('cmpBarChart'),{
     type:'bar',
     data:{labels:RADAR_LABELS,datasets:[
       {label:sA,data:dA||RADAR[sA],backgroundColor:'#1E40AF99',borderColor:'#1E40AF',borderWidth:1.5,borderRadius:4},
@@ -3677,7 +3627,7 @@ window.runCompareAnalysis=function(){
       plugins:{legend:{position:'bottom',labels:{color:'#2A2A2A',boxWidth:12,font:{size:13}}}},
       scales:{x:{ticks:{color:'#2A2A2A',font:{size:13}},grid:{display:false}},
               y:{min:50,max:90,ticks:{color:'#5A6A85',font:{size:13}},grid:{color:'#DDE4F0'}}}}
-  });
+  });}catch(e){console.warn('cmpBarChart error:',e);}
 
   // 비교 표
   const tableRows=RADAR_LABELS.map((subj,i)=>{
@@ -3943,7 +3893,7 @@ function openModal(s){
   const subs=['국어','수학','영어'];
   const aData=subs.map(x=>ARATE['5'][x][s]);
   if(aeChart)aeChart.destroy();
-  aeChart=new Chart(document.getElementById('aeChart'),{
+  try{aeChart=new Chart(document.getElementById('aeChart'),{
     type:'bar',
     data:{labels:subs,datasets:[
       {label:'A비율(%)',data:aData,backgroundColor:col,borderRadius:5},
@@ -3954,7 +3904,7 @@ function openModal(s){
         title:{display:true,text:'과목별 A비율 비교 (5등급제)',color:'#1C3D6B'}},
       scales:{x:{stacked:true,ticks:{color:'#2A2A2A'},grid:{display:false}},
               y:{stacked:true,max:100,ticks:{color:'#6B6B6B'},grid:{color:'#E5DDD0'}}}}
-  });
+  });}catch(e){console.warn('aeChart error:',e);}
   /* A비율 인쇄용 데이터 */
   const aePd=document.getElementById('aePrintData');
   if(aePd){
@@ -4843,7 +4793,7 @@ function renderRW(school){
       {label:'지필 (%)',     data:d.subjects.map(s=>100-(s.수행||0)), backgroundColor:'rgba(28,61,107,0.75)', borderRadius:3, stack:'a'},
     ];
   }
-  rwChartObj=new Chart(ctx,{
+  try{rwChartObj=new Chart(ctx,{
     type:'bar',
     data:{labels,datasets},
     options:{
@@ -4858,7 +4808,7 @@ function renderRW(school){
         y:{stacked:true}
       }
     }
-  });
+  });}catch(e){console.warn('rwChartObj error:',e);}
   const totalPerform=d.subjects.map(s=>d.hasBreakdown?((s.서논술||0)+(s.그외||0)):(s.수행||0));
   const avg=Math.round(totalPerform.reduce((a,b)=>a+b,0)/totalPerform.length);
   if(detEl) detEl.innerHTML=`<div class="infobox" style="background:#FFF8F0;border-left:3px solid var(--amber);">✏️ <b>${school} 분석</b><br><span style="display:block;margin-top:6px;line-height:1.8;">${d.note}</span><span style="display:block;margin-top:8px;font-size:13px;color:var(--muted);">→ 6개 주요 교과 평균 수행평가 비중: <b>약 ${avg}%</b></span></div>`;
@@ -4920,3 +4870,4 @@ function buildRWGrid(){
 </script>
 </body>
 </html>
+
