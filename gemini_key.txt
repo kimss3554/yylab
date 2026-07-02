@@ -1,0 +1,1 @@
+setx GEMINI_API_KEY "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""
