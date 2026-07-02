@@ -916,97 +916,44 @@
         <p style="font-size:13px;color:var(--muted);margin-top:14px;line-height:1.7;">※ 전문대·취업·학업중단·전출입 및 대학별 진학 현황 데이터는 추후 추가 예정입니다.</p>
       </div>
 
-      <!-- 패널 4: 학생 이동 -->
+      <!-- 패널 4: 학생 이동 (간단 버전) -->
       <div class="stats-panel hidden" id="sp-movement">
         <p class="stats-sub">전입·전출·학업중단 현황</p>
-        <p class="csub" style="margin:0 0 10px;">학교의 학생 안정성을 나타내는 지표입니다. (학교알리미 공시 데이터)</p>
+        <p class="csub" style="margin:0 0 10px;">학교의 학생 안정성을 나타내는 지표입니다. (학교알리미 공시 데이터, 2025학년도 기준)</p>
 
-        <!-- 탭 선택 -->
-        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
-          <button class="mv-tab active" data-tab="all" onclick="switchMovTab(this,'all')" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">전체 비교</button>
-          <button class="mv-tab" data-tab="in" onclick="switchMovTab(this,'in')" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;">전입 상세</button>
-          <button class="mv-tab" data-tab="out" onclick="switchMovTab(this,'out')" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;">전출 상세</button>
-          <button class="mv-tab" data-tab="drop" onclick="switchMovTab(this,'drop')" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;">학업중단 상세</button>
+        <div style="overflow-x:auto;margin-bottom:16px;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="background:var(--navy);color:#fff;">
+                <th style="padding:10px;text-align:left;font-weight:600;">학교</th>
+                <th style="padding:10px;text-align:center;font-weight:600;">📥 전입</th>
+                <th style="padding:10px;text-align:center;font-weight:600;">📤 전출</th>
+                <th style="padding:10px;text-align:center;font-weight:600;">⛔ 학업중단</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">광신고</td><td style="text-align:center;">15</td><td style="text-align:center;">13</td><td style="text-align:center;">10</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">구암고</td><td style="text-align:center;">15</td><td style="text-align:center;">6</td><td style="text-align:center;">15</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">남강고</td><td style="text-align:center;">18</td><td style="text-align:center;">20</td><td style="text-align:center;">8</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">당곡고</td><td style="text-align:center;">10</td><td style="text-align:center;">8</td><td style="text-align:center;">10</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">문영여고</td><td style="text-align:center;">1</td><td style="text-align:center;">11</td><td style="text-align:center;">8</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">미림여고</td><td style="text-align:center;">8</td><td style="text-align:center;">12</td><td style="text-align:center;">5</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">영락고</td><td style="text-align:center;">12</td><td style="text-align:center;">10</td><td style="text-align:center;">12</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">인헌고</td><td style="text-align:center;">9</td><td style="text-align:center;">7</td><td style="text-align:center;">6</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">신림고</td><td style="text-align:center;">21</td><td style="text-align:center;">14</td><td style="text-align:center;">9</td></tr>
+              <tr style="border-bottom:1px solid var(--line);"><td style="padding:8px;">삼성고</td><td style="text-align:center;">6</td><td style="text-align:center;">2</td><td style="text-align:center;">12</td></tr>
+              <tr><td style="padding:8px;">성보고</td><td style="text-align:center;">14</td><td style="text-align:center;">16</td><td style="text-align:center;">11</td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- 전체 비교 차트 -->
-        <div id="mv-all" class="mv-panel">
-          <div style="background:var(--section-alt);border-radius:12px;padding:20px;">
-            <p style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--heading);">학교별 전입·전출·학업중단 비교 (최신 공시 기준)</p>
-            <div style="position:relative;height:380px;">
-              <canvas id="movGroupChart"></canvas>
-            </div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px;">출처: 학교알리미 공시 데이터 | 광신고·구암고·남강고·당곡고·문영여고·신림고·영락고·인헌고 2025학년도, 미림여고·삼성고·성보고 2024학년도</p>
-          </div>
-
-          <!-- 요약 테이블 -->
-          <div style="margin-top:18px;overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:13px;">
-              <thead>
-                <tr style="background:var(--section-alt);">
-                  <th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);">학교</th>
-                  <th style="padding:8px 10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);color:#3B82F6;">전입</th>
-                  <th style="padding:8px 10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);color:#F59E0B;">전출</th>
-                  <th style="padding:8px 10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);color:#EF4444;">학업중단</th>
-                  <th style="padding:8px 10px;text-align:center;font-weight:600;border-bottom:2px solid var(--border);">기준연도</th>
-                </tr>
-              </thead>
-              <tbody id="mvTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 전입 상세 차트 -->
-        <div id="mv-in" class="mv-panel" style="display:none;">
-          <div style="background:var(--section-alt);border-radius:12px;padding:20px;">
-            <p style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--heading);">전입 학생 수 (학교별, 많은 순)</p>
-            <div style="position:relative;height:340px;">
-              <canvas id="movInChart"></canvas>
-            </div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px;">출처: 학교알리미 공시 데이터</p>
-          </div>
-          <div class="infobox info" style="margin-top:14px;font-size:13px;">
-            📌 <b>전입 해석</b> — 전입이 많다는 것은 학교 선호도가 높거나 거주지 이동으로 인한 유입이 활발함을 의미합니다. 신림고(21명), 남강고(18명)가 전입이 많고, 문영여고(1명)·미림여고(2명)는 전입이 거의 없습니다.
-          </div>
-        </div>
-
-        <!-- 전출 상세 차트 -->
-        <div id="mv-out" class="mv-panel" style="display:none;">
-          <div style="background:var(--section-alt);border-radius:12px;padding:20px;">
-            <p style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--heading);">전출 학생 수 (학교별, 많은 순)</p>
-            <div style="position:relative;height:340px;">
-              <canvas id="movOutChart"></canvas>
-            </div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px;">출처: 학교알리미 공시 데이터</p>
-          </div>
-          <div class="infobox info" style="margin-top:14px;font-size:13px;">
-            📌 <b>전출 해석</b> — 전출이 많다는 것은 학생이 다른 학교로 옮기는 경우가 잦음을 의미합니다. 남강고(20명)·인헌고(13명)는 전출이 상대적으로 많습니다. 삼성고(2명)·영락고(3명)는 전출이 매우 적어 학생 유지율이 높습니다.
-          </div>
-        </div>
-
-        <!-- 학업중단 상세 차트 -->
-        <div id="mv-drop" class="mv-panel" style="display:none;">
-          <div style="background:var(--section-alt);border-radius:12px;padding:20px;">
-            <p style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--heading);">학업중단 학생 수 (학교별, 많은 순)</p>
-            <div style="position:relative;height:340px;">
-              <canvas id="movDropChart"></canvas>
-            </div>
-            <p style="font-size:11px;color:var(--muted);margin-top:8px;">출처: 학교알리미 공시 데이터 | 관악구 평균 학업중단율 약 1.9~2.1%</p>
-          </div>
-          <div class="infobox warn" style="margin-top:14px;font-size:13px;">
-            ⚠️ <b>학업중단 해석</b> — 절대 인원보다 <b>학업중단율(%)</b>로 비교하는 것이 더 정확합니다. 삼성고(4.1%, 12명)는 소규모 학교임에도 중단율이 높아 주의가 필요합니다. 구암고(2.7%, 15명)도 상승 추세입니다. 반면 광신고(2.1%, 10명)·영락고(1.6%, 8명)·인헌고(1.4%, 6명)는 안정적입니다.
-          </div>
-        </div>
-
-        <!-- 분석 텍스트 -->
-        <div class="infobox" style="margin-top:18px;background:var(--section-alt);border:none;border-radius:12px;padding:18px;">
-          <p style="font-size:14px;font-weight:700;margin-bottom:10px;color:var(--heading);">📌 전입·전출·학업중단 분석</p>
-          <ul style="font-size:13px;line-height:1.9;color:var(--body);padding-left:18px;margin:0;">
-            <li><b>가장 안정적인 학교:</b> 광신고 (학업중단율 2.1%, 전출 13명), 영락고 (1.6%, 전출 3명), 인헌고 (1.4%, 전출 13명) — 학교 적응률이 관악구 평균 이하로 양호.</li>
-            <li><b>학업중단 주의 학교:</b> 삼성고 (4.1%, 소규모 학교임에도 12명 중단), 구암고 (2.7%, 상승 추세) — 학교 적응 환경 사전 확인 권장.</li>
-            <li><b>전입이 활발한 학교:</b> 신림고(21명), 남강고(18명), 인헌고·광신고(각 15명) — 학교 선호도 또는 거주지 이동 반영.</li>
-            <li><b>전출이 적은 학교:</b> 삼성고(2명), 영락고(3명) — 입학 후 전학이 매우 드물어 학생 유지율 높음.</li>
-            <li><b>입시 전략 시사점:</b> 학업중단율이 높은 학교는 학습 분위기·교우 관계 등 비학업 요소를 사전에 점검할 필요가 있습니다. 반면 전입이 많고 전출이 적은 학교는 학교 만족도가 높다는 신호로 해석할 수 있습니다.</li>
+        <div class="chart-analysis">
+          <strong>📌 전입·전출·학업중단 분석</strong>
+          <ul>
+            <li><strong>가장 안정적인 학교</strong> — 광신고(전출 13명), 영락고·인헌고(전출 7~10명). 학생 유지율 우수.</li>
+            <li><strong>전입이 많은 학교</strong> — 신림고(21명), 남강고(18명). 학교 선호도 또는 거주지 이동 반영.</li>
+            <li><strong>학업중단 주의</strong> — 삼성고(12명, 소규모), 구암고·영락고(각 15~12명). 학교 적응 환경 사전 확인 권장.</li>
+            <li><strong>입시 전략</strong> — 전입이 많고 전출이 적은 학교는 학생 만족도가 높다는 신호. 학업중단율은 절대 인원보다 비율(%)로 비교 필요.</li>
           </ul>
         </div>
       </div>
@@ -3221,7 +3168,6 @@ function switchStatsTab(id, btn){
   document.querySelectorAll('.stats-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById('sp-'+id).classList.remove('hidden');
   btn.classList.add('active');
-  if(id==='movement') setTimeout(initMovementCharts, 50);
 }
 
 /* ===================== PREMIUM LOCK ===================== */
@@ -4949,158 +4895,7 @@ function buildRWGrid(){
   }).join('');
 }
 
-/* ===================== MOVEMENT CHART ===================== */
-/* 데이터: 학교별 전입·전출·학업중단 (최신 공시 연도 기준) */
-var MV_DATA = {
-  '광신고':  {i:15, o:13, d:10, rate:2.1, year:'2025'},
-  '구암고':  {i:15, o:6,  d:15, rate:2.7, year:'2025'},
-  '남강고':  {i:18, o:20, d:8,  rate:1.3, year:'2025'},
-  '당곡고':  {i:10, o:8,  d:10, rate:1.3, year:'2025'},
-  '문영여고':{i:1,  o:11, d:8,  rate:1.3, year:'2025'},
-  '미림여고':{i:2,  o:10, d:9,  rate:1.8, year:'2024'},
-  '삼성고':  {i:7,  o:2,  d:12, rate:4.1, year:'2024'},
-  '성보고':  {i:4,  o:6,  d:7,  rate:1.1, year:'2024'},
-  '신림고':  {i:21, o:10, d:11, rate:2.3, year:'2025'},
-  '영락고':  {i:9,  o:3,  d:8,  rate:1.6, year:'2025'},
-  '인헌고':  {i:15, o:13, d:6,  rate:1.4, year:'2025'},
-};
-var MV_SCHOOL_ORDER = ['광신고','구암고','남강고','당곡고','문영여고','미림여고','삼성고','성보고','신림고','영락고','인헌고'];
-var MV_PALETTE = {
-  i:   'rgba(59,130,246,0.82)',
-  o:  'rgba(245,158,11,0.82)',
-  d: 'rgba(239,68,68,0.82)',
-};
-var _mvChartsInited = false;
-
-function initMovementCharts(){
-  if(_mvChartsInited) return;
-  _mvChartsInited = true;
-
-  /* canvas가 숨겨진 부모 안에 있을 때 Chart.js가 context를 못 얻는 문제 방지:
-     display:none 조상들을 잠시 화면 밖으로 노출 후 차트 생성, 다시 되돌림 */
-  var spPanel = document.getElementById('sp-movement');
-  var hiddenParents = [];
-  var _el = spPanel ? spPanel.parentElement : null;
-  while(_el && _el !== document.body){
-    if(window.getComputedStyle(_el).display === 'none'){
-      hiddenParents.push({el:_el, prevDisplay:_el.style.display, prevVis:_el.style.visibility, prevPos:_el.style.position, prevTop:_el.style.top});
-      _el.style.setProperty('display', 'block', 'important');
-      _el.style.setProperty('visibility', 'hidden', 'important');
-      _el.style.setProperty('position', 'fixed', 'important');
-      _el.style.setProperty('top', '-9999px', 'important');
-    }
-    _el = _el.parentElement;
-  }
-
-  /* ── 테이블 렌더 ── */
-  const tbody = document.getElementById('mvTableBody');
-  if(tbody && !tbody.children.length){
-    MV_SCHOOL_ORDER.forEach(s=>{
-      const d = MV_DATA[s];
-      const tr = document.createElement('tr');
-      tr.style.borderBottom = '1px solid var(--border)';
-      tr.innerHTML =
-        '<td style="padding:7px 10px;font-weight:600;">'+s+'</td>'+
-        '<td style="padding:7px 10px;text-align:center;color:#2563EB;font-weight:600;">'+d.i+'</td>'+
-        '<td style="padding:7px 10px;text-align:center;color:#D97706;font-weight:600;">'+d.o+'</td>'+
-        '<td style="padding:7px 10px;text-align:center;color:#DC2626;font-weight:600;">'+d.d+
-        '<span style="font-size:11px;color:var(--muted);font-weight:400;"> ('+d.rate+'%)</span></td>'+
-        '<td style="padding:7px 10px;text-align:center;font-size:12px;color:var(--muted);">'+d.year+'학년도</td>';
-      tbody.appendChild(tr);
-    });
-  }
-
-  /* ── 그룹 막대 차트 (전체 비교) ── */
-  const ctxGroup = document.getElementById('movGroupChart');
-  if(ctxGroup && !Chart.getChart(ctxGroup)){
-    new Chart(ctxGroup,{
-      type:'bar',
-      data:{
-        labels: MV_SCHOOL_ORDER,
-        datasets:[
-          {label:'전입',    data:MV_SCHOOL_ORDER.map(function(s){return MV_DATA[s].i;}),   backgroundColor:MV_PALETTE.i,  borderRadius:3},
-          {label:'전출',    data:MV_SCHOOL_ORDER.map(function(s){return MV_DATA[s].o;}),   backgroundColor:MV_PALETTE.o,  borderRadius:3},
-          {label:'학업중단',data:MV_SCHOOL_ORDER.map(function(s){return MV_DATA[s].d;}),   backgroundColor:MV_PALETTE.d,  borderRadius:3},
-        ]
-      },
-      options:{
-        responsive:true, maintainAspectRatio:false,
-        plugins:{
-          legend:{position:'top', labels:{font:{size:12},padding:12}},
-          tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.parsed.y+'명';}}}
-        },
-        scales:{
-          x:{ticks:{font:{size:11}}, grid:{display:false}},
-          y:{beginAtZero:true, ticks:{stepSize:5,font:{size:11}}, title:{display:true,text:'학생 수(명)',font:{size:11}}}
-        }
-      }
-    });
-  }
-
-  /* ── 단독 가로 막대 차트 ── */
-  function makeSingleBar(canvasId, field, label, color){
-    const ctx = document.getElementById(canvasId);
-    if(!ctx || Chart.getChart(ctx)) return;
-    var sorted = MV_SCHOOL_ORDER.slice().sort(function(a,b){return MV_DATA[b][field]-MV_DATA[a][field];});
-    new Chart(ctx,{
-      type:'bar', indexAxis:'y',
-      data:{
-        labels: sorted,
-        datasets:[{label:label, data:sorted.map(function(s){return MV_DATA[s][field];}),
-          backgroundColor: sorted.map(function(s){
-            if(field==='d'){
-              var r=MV_DATA[s].rate;
-              return r>=3?'rgba(239,68,68,0.85)':r>=2?'rgba(245,158,11,0.80)':'rgba(34,197,94,0.75)';
-            }
-            return color;
-          }),
-          borderRadius:4}]
-      },
-      options:{
-        responsive:true, maintainAspectRatio:false,
-        plugins:{
-          legend:{display:false},
-          tooltip:{callbacks:{label:function(c){
-            if(field==='d') return c.parsed.x+'명 (학업중단율 '+MV_DATA[sorted[c.dataIndex]].rate+'%)';
-            return c.parsed.x+'명';
-          }}}
-        },
-        scales:{
-          x:{beginAtZero:true, ticks:{stepSize:3,font:{size:11}}, grid:{color:'rgba(0,0,0,.06)'}},
-          y:{ticks:{font:{size:12}}, grid:{display:false}}
-        }
-      }
-    });
-  }
-  makeSingleBar('movInChart',  'i', '전입(명)',    MV_PALETTE.i);
-  makeSingleBar('movOutChart', 'o', '전출(명)',    MV_PALETTE.o);
-  makeSingleBar('movDropChart','d', '학업중단(명)', MV_PALETTE.d);
-
-  /* 임시 노출했던 부모 원래대로 복원 */
-  hiddenParents.forEach(function(item){
-    item.el.style.removeProperty('display');
-    item.el.style.removeProperty('visibility');
-    item.el.style.removeProperty('position');
-    item.el.style.removeProperty('top');
-    if(item.prevDisplay) item.el.style.display = item.prevDisplay;
-    if(item.prevVis)     item.el.style.visibility = item.prevVis;
-    if(item.prevPos)     item.el.style.position = item.prevPos;
-    if(item.prevTop)     item.el.style.top = item.prevTop;
-  });
-}
-
-/* ── 이동 현황 탭 전환 ── */
-function switchMovTab(btn, tab){
-  document.querySelectorAll('.mv-tab').forEach(b=>{
-    b.style.background = 'transparent';
-    b.style.color = 'var(--accent)';
-  });
-  btn.style.background = 'var(--accent)';
-  btn.style.color = '#fff';
-  document.querySelectorAll('.mv-panel').forEach(p=>{ p.style.display='none'; });
-  const target = document.getElementById('mv-'+tab);
-  if(target) target.style.display='block';
-}
+/* MOVEMENT CHART 코드 제거됨 - HTML에서 간단한 테이블로 대체됨 */
 </script>
 <script>
 /* ===== 안전장치: 초기화가 통째로 실패해도 콘텐츠가 백지가 되지 않도록 =====
