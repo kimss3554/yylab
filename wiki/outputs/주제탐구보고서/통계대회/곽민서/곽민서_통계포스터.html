@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>줄임말은 정말 나쁜가? — 통계포스터</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', '맑은 고딕', 'Malgun Gothic', '나눔고딕', sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .poster {
+    width: 900px;
+    background: white;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #1a3a6b 0%, #2d5fa6 60%, #4472C4 100%);
+    color: white;
+    padding: 32px 36px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    right: 80px; bottom: -50px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .competition-badge {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .sample-badges {
+    display: flex;
+    gap: 8px;
+  }
+  .badge {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge span {
+    font-weight: 900;
+    font-size: 14px;
+  }
+
+  .main-title {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+  .main-title em {
+    font-style: normal;
+    color: #FFD966;
+  }
+  .subtitle {
+    font-size: 17px;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 16px;
+  }
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+  .author-row strong { font-weight: 700; opacity: 1; font-size: 14px; }
+  .sep { opacity: 0.4; }
+
+  /* ── KEY FINDINGS STRIP ── */
+  .findings-strip {
+    display: flex;
+    background: #FFF9E6;
+    border-bottom: 3px solid #FFD966;
+  }
+  .finding-item {
+    flex: 1;
+    padding: 12px 14px;
+    text-align: center;
+    border-right: 1px solid #FFE88A;
+  }
+  .finding-item:last-child { border-right: none; }
+  .finding-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: #B8860B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .finding-text {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #2d2d2d;
+    line-height: 1.4;
+  }
+  .finding-text em {
+    color: #C00000;
+    font-style: normal;
+  }
+
+  /* ── BODY GRID ── */
+  .body-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 400px;
+  }
+
+  .left-col {
+    background: #F7F9FC;
+    border-right: 1px solid #E0E6F0;
+    padding: 20px 16px;
+  }
+  .right-col {
+    padding: 20px 20px 0;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #4472C4;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #4472C4;
+    margin-bottom: 10px;
+  }
+
+  .motive-text {
+    font-size: 12.5px;
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .motive-text strong { color: #1a3a6b; }
+
+  .quote-box {
+    background: #EBF2FC;
+    border-left: 3px solid #4472C4;
+    padding: 8px 10px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: #2d2d2d;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .method-box {
+    background: white;
+    border: 1px solid #DDE4F0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .method-box h4 {
+    font-size: 11px;
+    color: #4472C4;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .method-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #333;
+    padding: 3px 0;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .method-row:last-child { border-bottom: none; }
+  .method-row .val { font-weight: 700; color: #1a3a6b; }
+
+  .hypo-box {
+    background: white;
+    border: 1px solid #DDE4F0;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .hypo-box h4 {
+    font-size: 11px;
+    color: #4472C4;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .hypo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 7px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #333;
+  }
+  .hypo-badge {
+    flex-shrink: 0;
+    background: #4472C4;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-top: 2px;
+  }
+  .hypo-badge.partial { background: #ED7D31; }
+  .hypo-result {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-top: 2px;
+  }
+  .adopted { background: #E8F4E8; color: #2E7D32; border: 1px solid #A5D6A7; }
+  .partial-adopted { background: #FFF3E0; color: #E65100; border: 1px solid #FFCC80; }
+
+  /* ── CHARTS GRID ── */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .chart-card {
+    background: white;
+    border: 1px solid #E8EDF5;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(68,114,196,0.08);
+  }
+  .chart-card.highlight {
+    border-color: #C00000;
+    box-shadow: 0 2px 10px rgba(192,0,0,0.12);
+  }
+  .chart-card.wide {
+    grid-column: 1 / -1;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1a3a6b;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .chart-subtitle {
+    font-size: 11px;
+    color: #666;
+    font-weight: 400;
+  }
+
+  /* Mini bar chart */
+  .bar-group { margin-bottom: 10px; }
+  .bar-label {
+    font-size: 11px;
+    color: #444;
+    margin-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .bar-track {
+    background: #F0F2F8;
+    border-radius: 4px;
+    height: 22px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px 0 0 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+    white-space: nowrap;
+    transition: width 0.3s;
+  }
+  .bar-fill.blue { background: #4472C4; }
+  .bar-fill.orange { background: #ED7D31; }
+  .bar-fill.red { background: #C00000; }
+  .bar-fill.light-blue { background: #9DC3E6; color: #333; }
+  .bar-fill.green { background: #70AD47; }
+
+  .bar-separator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 3px 0 8px;
+  }
+  .bar-separator hr {
+    flex: 1;
+    border: none;
+    border-top: 1px dashed #DDD;
+  }
+  .bar-separator span {
+    font-size: 10px;
+    color: #999;
+    white-space: nowrap;
+  }
+
+  .diff-badge {
+    display: inline-block;
+    background: #FFE0E0;
+    color: #C00000;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1.5px solid #C00000;
+    margin-top: 6px;
+  }
+  .diff-badge.blue-diff {
+    background: #E0EBFF;
+    color: #4472C4;
+    border-color: #4472C4;
+  }
+
+  .insight-box {
+    background: #FFF9E6;
+    border-left: 3px solid #FFB700;
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+    font-size: 11.5px;
+    color: #5a4500;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  .insight-box strong { color: #C00000; }
+
+  .paradox-box {
+    background: #FFF3E0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+  }
+  .paradox-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #E65100;
+    margin-bottom: 8px;
+  }
+  .paradox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .paradox-label {
+    font-size: 11px;
+    color: #333;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  .paradox-bar {
+    flex: 1;
+    height: 20px;
+    background: #F5E6CC;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .paradox-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+  }
+  .paradox-arrow {
+    text-align: center;
+    color: #E65100;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 4px 0;
+  }
+  .paradox-desc {
+    font-size: 11.5px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 6px;
+    border-top: 1px dashed #DDD;
+    padding-top: 6px;
+  }
+
+  /* ── BOTTOM STRIP ── */
+  .bottom-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: #F7F9FC;
+    border-top: 2px solid #E0E6F0;
+    margin-top: 4px;
+  }
+
+  .bottom-section {
+    padding: 16px 16px;
+    border-right: 1px solid #E0E6F0;
+  }
+  .bottom-section:last-child { border-right: none; }
+
+  .conclusion-text {
+    font-size: 12.5px;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .conclusion-highlight {
+    background: linear-gradient(135deg, #1a3a6b, #4472C4);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .conclusion-highlight em {
+    font-style: normal;
+    color: #FFD966;
+  }
+
+  .suggest-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #333;
+  }
+  .suggest-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: white;
+    margin-top: 1px;
+  }
+  .suggest-icon.s1 { background: #4472C4; }
+  .suggest-icon.s2 { background: #ED7D31; }
+  .suggest-icon.s3 { background: #C00000; }
+
+  .learned-item {
+    font-size: 12px;
+    color: #444;
+    line-height: 1.6;
+    padding: 4px 0 4px 12px;
+    border-left: 2px solid #4472C4;
+    margin-bottom: 6px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #1a3a6b;
+    color: rgba(255,255,255,0.7);
+    padding: 10px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+  }
+  .footer strong { color: white; }
+  .footer-refs {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-align: right;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .legend-label { font-size: 11px; color: #555; }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .poster { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="competition-badge">제28회 전국학생통계활용대회 · 초등부 1인팀</div>
+      <div class="sample-badges">
+        <div class="badge">학생 <span>111</span>명</div>
+        <div class="badge">학부모 <span>27</span>명</div>
+        <div class="badge">2026.6.23~30</div>
+      </div>
+    </div>
+    <div class="main-title">줄임말은 <em>정말</em> 나쁜가?</div>
+    <div class="subtitle">학생과 학부모가 생각하는 줄임말 비교 — 두 집단 설문조사</div>
+    <div class="author-row">
+      <strong>곽민서</strong>
+      <span class="sep">|</span>
+      <span>초등학교 5학년</span>
+      <span class="sep">|</span>
+      <span>탐구 기간: 2026년 6월</span>
+    </div>
+  </div>
+
+  <!-- ── KEY FINDINGS STRIP ── -->
+  <div class="findings-strip">
+    <div class="finding-item">
+      <div class="finding-num">핵심 발견 1</div>
+      <div class="finding-text">줄임말, 학생만 쓰지 않는다<br><em>학부모도 66.7%가 사용</em></div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-num">핵심 발견 2</div>
+      <div class="finding-text">말습관 걱정, <em>26%p 차이!</em><br>학부모 77.8% vs 학생 44.5%</div>
+    </div>
+    <div class="finding-item">
+      <div class="finding-num">핵심 발견 3</div>
+      <div class="finding-text">"상황에 따라 다르다"<br><em>두 집단 모두 1위</em> (72.7% / 96.3%)</div>
+    </div>
+  </div>
+
+  <!-- ── BODY ── -->
+  <div class="body-grid">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+      <div class="section-title">탐구 동기</div>
+      <div class="motive-text">
+        수업 시간에 <strong>'생선(생일선물)'</strong>이라는 줄임말이 나왔다. 얼마 뒤 남동생 초대장에 <strong>'생파'</strong>라고 쓰여 있었고, 아빠는 바로 알아듣지 못하셨다.
+      </div>
+      <div class="quote-box">
+        선생님도 '가통' 같은 줄임말을 쓰시고,<br>아빠도 어릴 때 줄임말을 쓰셨다고 했다.<br>그렇다면 왜 어른들은 <strong>아이들의 줄임말만</strong><br>걱정하시는 걸까?
+      </div>
+      <div class="motive-text" style="margin-bottom:14px">
+        학생과 학부모의 생각을 <strong>직접 비교</strong>해 답을 찾기로 했다.
+      </div>
+
+      <div class="section-title" style="margin-top:4px">탐구 방법</div>
+      <div class="method-box">
+        <h4>자료 수집</h4>
+        <div class="method-row"><span>학생 설문</span><span class="val">인쇄물 · 초3~6학년</span></div>
+        <div class="method-row"><span>학부모 설문</span><span class="val">구글폼 · QR코드</span></div>
+        <div class="method-row"><span>비교 방법</span><span class="val">비율(%) 기준 비교</span></div>
+        <div class="method-row"><span>유효응답 처리</span><span class="val">문항별 n 별도 확인</span></div>
+      </div>
+
+      <div class="hypo-box">
+        <h4>탐구 가설</h4>
+        <div class="hypo-item">
+          <span class="hypo-badge">가설1</span>
+          <span>학부모는 자녀 세대 줄임말을 잘 모르고, 세대 차이를 느낀다</span>
+          <span class="hypo-result adopted">채택</span>
+        </div>
+        <div class="hypo-item">
+          <span class="hypo-badge partial">가설2</span>
+          <span>학창시절 경험이 현재 생각에 영향을 준다</span>
+          <span class="hypo-result partial-adopted">부분채택</span>
+        </div>
+        <div class="hypo-item">
+          <span class="hypo-badge">가설3</span>
+          <span>두 집단 모두 상황에 따라 다르게 봐야 한다고 생각한다</span>
+          <span class="hypo-result adopted">채택</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Charts -->
+    <div class="right-col">
+      <div class="charts-grid">
+
+        <!-- Chart 1: 사용 빈도 -->
+        <div class="chart-card">
+          <div class="chart-title">줄임말 사용 빈도 비교<br><span class="chart-subtitle">— 학생도, 학부모도 쓴다</span></div>
+          <div class="legend-row">
+            <div class="legend-dot" style="background:#4472C4"></div><div class="legend-label">학생 (111명)</div>
+            <div class="legend-dot" style="background:#ED7D31"></div><div class="legend-label">학부모 (27명)</div>
+          </div>
+          <div class="bar-group">
+            <div class="bar-label"><span>자주 쓴다</span></div>
+            <div style="display:flex; gap:4px; margin-bottom:3px">
+              <div style="width:40px;font-size:10px;color:#4472C4;font-weight:700;text-align:right;line-height:22px">학생</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill blue" style="width:57.8%">38.7%</div></div>
+            </div>
+            <div style="display:flex; gap:4px; margin-bottom:6px">
+              <div style="width:40px;font-size:10px;color:#ED7D31;font-weight:700;text-align:right;line-height:22px">학부모</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill orange" style="width:16.6%">11.1%</div></div>
+            </div>
+          </div>
+          <div class="bar-group">
+            <div class="bar-label"><span>가끔 쓴다</span></div>
+            <div style="display:flex; gap:4px; margin-bottom:3px">
+              <div style="width:40px;font-size:10px;color:#4472C4;font-weight:700;text-align:right;line-height:22px">학생</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill blue" style="width:72.7%">48.7%</div></div>
+            </div>
+            <div style="display:flex; gap:4px; margin-bottom:6px">
+              <div style="width:40px;font-size:10px;color:#ED7D31;font-weight:700;text-align:right;line-height:22px">학부모</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill orange" style="width:83.1%">55.6%</div></div>
+            </div>
+          </div>
+          <div class="insight-box">
+            학생 <strong>87.4%</strong> vs 학부모 <strong>66.7%</strong> — 두 집단 모두 줄임말을 사용한다. 줄임말은 학생만의 말이 아니다.
+          </div>
+        </div>
+
+        <!-- Chart 2: 말습관 걱정 -->
+        <div class="chart-card highlight">
+          <div class="chart-title">말습관에 나쁜 영향이 있을 것 같나요?<br><span class="chart-subtitle">— 가장 큰 생각 차이</span></div>
+          <div class="bar-group" style="margin-bottom:10px">
+            <div class="bar-label"><span>나쁜 영향이 있을 것 같다 (학생)</span></div>
+            <div class="bar-track"><div class="bar-fill light-blue" style="width:44.5%">44.5%</div></div>
+          </div>
+          <div class="bar-group" style="margin-bottom:10px">
+            <div class="bar-label"><span>나쁜 영향이 있을 것 같다 (학부모)</span></div>
+            <div class="bar-track"><div class="bar-fill red" style="width:77.8%">77.8%</div></div>
+          </div>
+          <div style="text-align:center">
+            <span class="diff-badge">▲ 26.0%p 차이!</span>
+          </div>
+          <div class="insight-box" style="margin-top:8px">
+            학생은 <strong>"별 영향 없다" 51.8%</strong> 가 더 많지만,
+            학부모는 <strong>"나쁜 영향" 77.8%</strong>가 압도적이다.
+            이것이 두 집단의 생각 차이가 가장 크게 드러난 결과다.
+          </div>
+        </div>
+
+        <!-- Chart 3: 전체 생각 -->
+        <div class="chart-card">
+          <div class="chart-title">줄임말에 대한 전체 생각<br><span class="chart-subtitle">— 두 집단 모두 "상황에 따라 다르다" 1위</span></div>
+          <div class="bar-group">
+            <div class="bar-label"><span>상황에 따라 다르다</span></div>
+            <div style="display:flex; gap:4px; margin-bottom:3px">
+              <div style="width:40px;font-size:10px;color:#4472C4;font-weight:700;text-align:right;line-height:22px">학생</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill blue" style="width:72.7%">72.7%</div></div>
+            </div>
+            <div style="display:flex; gap:4px; margin-bottom:10px">
+              <div style="width:40px;font-size:10px;color:#ED7D31;font-weight:700;text-align:right;line-height:22px">학부모</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill orange" style="width:96.3%">96.3%</div></div>
+            </div>
+          </div>
+          <div class="bar-group">
+            <div class="bar-label"><span>어른과 대화할 때 조심 (1위)</span></div>
+            <div style="display:flex; gap:4px; margin-bottom:3px">
+              <div style="width:40px;font-size:10px;color:#4472C4;font-weight:700;text-align:right;line-height:22px">학생</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill blue" style="width:59.6%">59.6%</div></div>
+            </div>
+            <div style="display:flex; gap:4px;">
+              <div style="width:40px;font-size:10px;color:#ED7D31;font-weight:700;text-align:right;line-height:22px">학부모</div>
+              <div class="bar-track" style="flex:1"><div class="bar-fill orange" style="width:66.7%">66.7%</div></div>
+            </div>
+          </div>
+          <div class="insight-box" style="margin-top:10px">
+            학부모도 줄임말을 <strong>"무조건 나쁘다"고 보지 않는다.</strong><br>
+            두 집단 모두 조심할 상황으로 "어른과 대화할 때"를 1위로 꼽았다.
+          </div>
+        </div>
+
+        <!-- Chart 4: 역설 -->
+        <div class="chart-card">
+          <div class="chart-title">흥미로운 발견 — 인식의 역설<br><span class="chart-subtitle">— 부모는 말했다고 생각하지만, 아이는 크게 못 느꼈다</span></div>
+          <div class="paradox-box">
+            <div class="paradox-title">"줄임말 쓰지 말라" — 누가 더 많이 알고 있나?</div>
+            <div class="paradox-row">
+              <div class="paradox-label">학부모: "가끔 말한다"</div>
+              <div class="paradox-bar">
+                <div class="paradox-fill" style="width:51.9%; background:#ED7D31;">51.9%</div>
+              </div>
+            </div>
+            <div class="paradox-arrow">↓</div>
+            <div class="paradox-row">
+              <div class="paradox-label">학생: "들었다"</div>
+              <div class="paradox-bar">
+                <div class="paradox-fill" style="width:18.9%; background:#4472C4;">18.9%</div>
+              </div>
+            </div>
+            <div class="paradox-desc">
+              학부모는 자녀에게 주의를 주었다고 생각하지만, 학생은 거의 느끼지 못했다.
+              <strong>세대 차이는 말의 뜻을 모르는 것 외에도, 걱정을 전달하는 방식에서도 나타난다.</strong>
+            </div>
+          </div>
+          <span class="diff-badge" style="margin-top:8px;display:inline-block">▲ 33.0%p 차이</span>
+        </div>
+
+      </div><!-- /charts-grid -->
+    </div><!-- /right-col -->
+  </div><!-- /body-grid -->
+
+  <!-- ── BOTTOM STRIP ── -->
+  <div class="bottom-strip">
+
+    <div class="bottom-section">
+      <div class="section-title">결론</div>
+      <div class="conclusion-text">
+        줄임말을 학생만 쓰는 것이 아니었다. 두 집단 모두 <strong>빠르고 편한 소통</strong> 때문에 줄임말을 썼다. 하지만 학부모는 말습관 걱정을 <strong>더 크게</strong> 했고, 세대 차이도 더 많이 느꼈다.
+      </div>
+      <div class="conclusion-highlight">
+        줄임말은 <em>무조건 나쁜 것이 아니라</em><br>상황과 상대에 따라<br>다르게 써야 하는 말
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="section-title">내가 제안하는 3가지 약속</div>
+      <div class="suggest-item">
+        <div class="suggest-icon s1">1</div>
+        <div><strong>친구끼리는 편하게</strong> — 서로 알아듣는 줄임말은 자유롭게 쓸 수 있다</div>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-icon s2">2</div>
+        <div><strong>발표·글쓰기는 바르게</strong> — 공식적인 상황에서는 표준어로 쓴다</div>
+      </div>
+      <div class="suggest-item">
+        <div class="suggest-icon s3">3</div>
+        <div><strong>선생님·어른께는 조심해서</strong> — 상대방이 모를 수 있는 말은 풀어서 설명한다</div>
+      </div>
+      <div class="insight-box" style="margin-top:10px; font-size:11.5px">
+        이 약속은 줄임말을 금지하는 것이 아니라,<br><strong>상대방을 생각하면서 말하는 연습</strong>을 하자는 뜻이다.
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <div class="section-title">내가 배운 것</div>
+      <div class="learned-item">응답 수가 다른 두 집단은 <strong>비율(%)</strong>로 비교해야 공정하다</div>
+      <div class="learned-item">그래프는 예쁜 것보다 <strong>어떤 비교에 맞는지</strong>를 먼저 생각해야 한다</div>
+      <div class="learned-item">학생과 학부모의 생각이 <strong>완전히 반대는 아니었다</strong> — 둘 다 "상황에 따라 다르다"고 봤다</div>
+      <div class="learned-item">서로의 생각을 알면 줄임말 때문에 생기는 <strong>오해도 줄일 수 있다</strong></div>
+      <div style="margin-top:8px; font-size:11px; color:#888; border-top:1px dashed #DDD; padding-top:8px;">
+        <strong>한계:</strong> 학부모 27명은 수가 적어 일반화에 한계가 있다. 다음엔 더 많이 모아 비교할 것이다.
+      </div>
+    </div>
+
+  </div><!-- /bottom-strip -->
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <div>
+      <strong>곽민서</strong> · 초등학교 5학년 · 제28회 전국학생통계활용대회
+    </div>
+    <div class="footer-refs">
+      참고: 국립국어원(2010·2011) · 대구시교육청(2016) · 직접 설문조사(학생 111명, 학부모 27명, 2026.6)
+    </div>
+  </div>
+
+</div><!-- /poster -->
+</body>
+</html>

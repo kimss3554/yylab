@@ -1,0 +1,46 @@
+﻿# Dependencies
+node_modules/
+.node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Temp files
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# System
+.claude/
+.claudian/
+.history/
+.obsidian/
+_workspace/
+.omc/
+
+# Raw data (large files)
+raw/**/*.pdf
+raw/**/*.hwp
+raw/**/*.pptx
+raw/**/*.xlsx
+raw/**/*.zip
+
+# Cache
+*.cache
+*.swp
+.parcel-cache/

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --bg:#FFFFFF; --grad:#E9F1FC;
+    --navy:#11244C; --blue:#2B6FF0; --blue2:#1655C8; --blueDeep:#0E3DA0;
+    --badge:#E6EFFC; --card:#F4F8FE; --cardLine:#E1EAF7; --divider:#D5E2F5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Pretendard','Noto Sans KR',sans-serif;background:#e7e7e7;}
+  .card{
+    width:1080px;height:1080px;position:relative;overflow:hidden;
+    background:var(--bg);
+    padding:78px 70px;margin:20px auto;border:1px solid #ECECEC;
+    display:flex;flex-direction:column;
+  }
+  /* 로고 — 엠블럼(이미지) + 워드마크(벡터 텍스트, 안 깨짐) */
+  .logo{position:absolute;top:34px;right:42px;z-index:5;display:flex;align-items:center;gap:11px;}
+  .logo img{height:54px;display:block;}
+  .logo .wm{font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:800;
+    font-size:33px;letter-spacing:-1.2px;color:#11244C;line-height:1;}
+
+  /* 표지 레이어 구조 */
+  .cover-top{display:flex;justify-content:flex-end;align-items:center;width:100%;}
+  .cover-top .logo{position:static;}              /* 로고가 한 줄(레이어) 차지 */
+  .cover-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;gap:40px;}
+  .cover-text{display:flex;flex-direction:column;align-items:center;width:100%;}
+  .cover-illust{display:flex;justify-content:center;width:100%;}
+
+  /* 제목 — 의미 단위 줄바꿈 + 가운데 정렬 + 자동 맞춤 */
+  .title{font-family:'Black Han Sans',sans-serif;font-weight:400;
+    font-size:104px;line-height:0.84;color:var(--navy);letter-spacing:-3px;
+    text-align:center;width:100%;}
+  .title .ln{display:table;margin:0 auto;white-space:nowrap;}
+  .title .blue{color:var(--blue);}
+  /* 짧고 얇은 구분선 (레퍼런스 스타일) */
+  .caret{height:4px;width:76px;margin:26px auto 0;background:var(--blue);border-radius:3px;}
+  .subtitle{font-size:46px;font-weight:800;color:var(--navy);text-align:center;margin-top:42px;line-height:1.4;}
+  .subtitle .blue{color:var(--blue);}
+
+  .eyebrow{font-size:38px;font-weight:800;color:var(--blue);text-align:center;}
+  /* 레퍼런스 다크 알약 배지 */
+  .eyebrow-pill{display:inline-block;background:var(--navy);color:#fff;font-weight:800;font-size:34px;
+    padding:15px 56px;border-radius:999px;letter-spacing:-.5px;box-shadow:0 8px 18px rgba(17,36,76,.22);white-space:nowrap;}
+  /* 상단 pill 행 — 가로 라인으로 연결: ─ 노란pill ─ 네이비pill ─ */
+  .cover-pills{display:flex;justify-content:center;align-items:center;gap:12px;width:100%;}
+  .cover-pills .hline{flex:1;height:2px;background:var(--navy);opacity:.45;border-radius:2px;}
+  .cover-pills .hline.mid{flex:0 0 40px;}   /* 두 pill 사이 간격 좁게 */
+  .pill-logo{display:inline-flex;align-items:center;gap:9px;background:#FFD400;border-radius:999px;
+    padding:11px 26px 11px 18px;box-shadow:0 8px 18px rgba(17,36,76,.18);}
+  .pill-logo img{height:58px;display:block;}
+  .pill-logo span{font-family:'Pretendard','Noto Sans KR',sans-serif;font-weight:800;font-size:34px;
+    letter-spacing:-1px;color:#11244C;}
+
+  .content-card{background:var(--card);border:1px solid var(--cardLine);border-radius:32px;
+    padding:46px 50px;box-shadow:0 20px 45px rgba(17,36,76,.07);}
+  .row{display:flex;align-items:center;gap:34px;}
+  .row+.row{margin-top:30px;}
+  .badge{width:96px;height:96px;flex:0 0 96px;border-radius:50%;
+    background:linear-gradient(145deg,#3D82F5,#1655C8);
+    box-shadow:0 10px 22px rgba(43,111,240,.38), inset 0 2px 4px rgba(255,255,255,.4);
+    display:flex;align-items:center;justify-content:center;}
+  .row-text{font-size:47px;font-weight:800;color:var(--navy);line-height:1.32;letter-spacing:-.5px;}
+  .row-text .blue{color:var(--blue);}
+  .row-text small{display:block;font-size:32px;font-weight:500;color:var(--navy);margin-top:8px;opacity:.82;}
+
+  .center{justify-content:center;align-items:center;}
+  .cta-msg{font-family:'Black Han Sans',sans-serif;font-size:74px;color:var(--navy);line-height:1.24;text-align:center;}
+  .cta-msg .ln{display:block;white-space:nowrap;}
+  .cta-msg .blue{color:var(--blue);}
+  .cta-sub{font-size:37px;font-weight:500;color:var(--navy);line-height:1.6;margin-top:30px;text-align:center;}
+  .source-pill{display:inline-flex;align-items:center;gap:16px;border:3px solid var(--blue);
+    border-radius:999px;padding:20px 42px;font-weight:700;font-size:33px;color:var(--navy);background:#fff;}
+
+  /* 데이터 행 카드 (번호배지 + 텍스트 + 세로구분선 + 3D) */
+  .drow{display:flex;align-items:center;gap:28px;width:100%;
+    background:var(--card);border:1px solid var(--cardLine);border-radius:26px;
+    padding:24px 38px;box-shadow:0 12px 30px rgba(17,36,76,.06);}
+  .drow+.drow{margin-top:18px;}
+  .num{width:78px;height:78px;flex:0 0 78px;border-radius:50%;
+    background:linear-gradient(145deg,#3D82F5,#1655C8);color:#fff;
+    font-family:'Black Han Sans';font-size:40px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px rgba(43,111,240,.35);}
+  .dtx{flex:1;font-size:42px;font-weight:800;color:var(--navy);line-height:1.32;letter-spacing:-.5px;}
+  .dtx .blue{color:var(--blue);}
+  .dtx small{display:block;font-size:28px;font-weight:500;color:var(--navy);opacity:.78;margin-top:6px;}
+  .vline{width:2px;align-self:stretch;background:var(--divider);margin:4px 0;}
+  .dico{width:120px;height:120px;flex:0 0 120px;object-fit:contain;}
+
+  /* CTA 헤더 (교육 분석 장면 + 생각탐구 로고 조합) */
+  .cta-head{display:flex;justify-content:center;align-items:center;margin:-24px auto 10px;}
+  .cta-head .hero{width:840px;display:block;}
+
+  /* 가로형 링크 카드 (브랜드 아이콘 + 2줄 텍스트 + QR) */
+  .lcard{display:flex;align-items:center;gap:30px;width:100%;
+    background:var(--card);border:1px solid var(--cardLine);border-radius:26px;padding:26px 36px;
+    box-shadow:0 12px 30px rgba(17,36,76,.06);text-decoration:none;}
+  .lcard+.lcard{margin-top:12px;}
+  .bi{width:96px;height:96px;flex:0 0 96px;border-radius:24px;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:30px;box-shadow:0 8px 18px rgba(17,36,76,.15);}
+  .bi.blog{background:#03C75A;color:#fff;}
+  .bi.talk{background:#FEE500;color:#3A1D1D;}
+  .ltx{flex:1;font-size:33px;font-weight:700;color:var(--navy);line-height:1.45;}
+  .ltx b{color:var(--blue);font-weight:800;}
+  .lqr{width:128px;height:128px;flex:0 0 128px;border-radius:12px;}
+
+  /* CTA 안내·상담 카드 (레퍼런스 6/6 스타일) */
+  .info-card{display:flex;align-items:center;gap:28px;width:100%;
+    background:var(--card);border:1px solid var(--cardLine);border-radius:26px;
+    padding:28px 38px;box-shadow:0 12px 30px rgba(17,36,76,.06);text-decoration:none;}
+  .info-card+.info-card{margin-top:18px;}
+  .info-ic{width:84px;height:84px;flex:0 0 84px;border-radius:50%;
+    background:linear-gradient(145deg,#3D82F5,#1655C8);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px rgba(43,111,240,.35);}
+  .info-tx{font-size:36px;font-weight:700;color:var(--navy);line-height:1.4;text-align:left;}
+  .info-tx b{color:var(--blue);font-weight:800;}
+  .info-tx small{display:block;font-size:27px;font-weight:500;color:var(--navy);opacity:.75;margin-top:4px;}
+  .tags{display:flex;justify-content:space-between;width:100%;margin-top:24px;}
+  .tag{background:var(--navy);color:#fff;font-weight:700;font-size:22px;
+    padding:18px 0;border-radius:999px;text-align:center;flex:1;margin:0 5px;letter-spacing:-.5px;
+    box-shadow:0 6px 14px rgba(17,36,76,.20);}
+  .tag:first-child{margin-left:0;}.tag:last-child{margin-right:0;}
+  .drop{filter:drop-shadow(0 18px 24px rgba(17,36,76,.18));}
+
+  /* P6-e: 큰 도넛 + 측면 스탯 (수학 컷) */
+  .cfill{flex:1;display:flex;align-items:center;width:100%;}      /* 남은 세로 공간 꽉 채워 중앙 정렬 */
+  .mathwrap{display:flex;align-items:center;gap:40px;width:100%;}
+  .scol{flex:1;display:flex;flex-direction:column;gap:30px;}
+  .sitem{display:flex;align-items:center;gap:26px;background:var(--card);border:1px solid var(--cardLine);
+    border-radius:26px;padding:38px 36px;box-shadow:0 10px 26px rgba(17,36,76,.06);}
+  .sitem .ic{width:88px;height:88px;flex:0 0 88px;border-radius:50%;background:var(--badge);
+    display:flex;align-items:center;justify-content:center;}
+  .sitem .ic img{width:60px;height:60px;}
+  .sitem .tx{font-size:33px;font-weight:800;color:var(--navy);line-height:1.22;}
+  .sitem .tx .blue{color:var(--blue);}
+  .sitem .tx small{display:block;font-size:24px;font-weight:500;color:var(--navy);opacity:.8;margin-top:6px;line-height:1.3;}
+
+  /* P2-b: 2단 비교 카드 + 결론 바 (영어 컷) */
+  .cmp{display:flex;gap:24px;width:100%;margin-top:8px;}
+  .cmp-card{flex:1;background:var(--card);border:1px solid var(--cardLine);border-radius:28px;
+    padding:24px 24px 26px;display:flex;flex-direction:column;align-items:center;box-shadow:0 12px 30px rgba(17,36,76,.06);}
+  .cmp-head{background:var(--blue);color:#fff;font-weight:800;font-size:29px;padding:11px 30px;border-radius:999px;}
+  .cmp-card img{width:96px;margin:14px 0 4px;}
+  .cmp-big{font-family:'Black Han Sans';font-size:66px;color:var(--blue);line-height:1;}
+  .cmp-sub{font-size:29px;font-weight:800;color:var(--navy);margin-top:6px;}
+  .cmp-li{width:100%;font-size:27px;font-weight:600;color:var(--navy);margin-top:13px;display:flex;gap:11px;align-items:flex-start;}
+  .cmp-li .ck{color:var(--blue);font-weight:900;flex:0 0 auto;}
+  .concl-bar{display:flex;align-items:center;gap:20px;width:100%;background:#EAF1FB;border-radius:24px;
+    padding:22px 34px;margin-top:18px;font-size:34px;font-weight:800;color:var(--navy);line-height:1.3;}
+  .concl-bar .blue{color:var(--blue);}
+  .concl-bar .cic{width:66px;height:66px;flex:0 0 66px;border-radius:50%;background:var(--blue);
+    display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+<body>
+
+<!-- ===== 컷 1 · 표지 ===== -->
+<section class="card" id="cut-1" style="padding-top:34px;">
+  <!-- 레이어 2~3: 텍스트 + 메인 이미지 (가운데 균형) -->
+  <div class="cover-body" style="gap:20px;justify-content:flex-start;padding-top:10px;">
+    <div class="cover-text">
+      <div class="cover-pills" style="margin-bottom:30px;">
+        <span class="hline"></span>
+        <span class="pill-logo"><img src="images/logo-emblem.png" alt=""><span>생각탐구</span></span>
+        <span class="hline mid"></span>
+        <span class="eyebrow-pill">관악구 11개 고교 분석</span>
+        <span class="hline"></span>
+      </div>
+      <h1 class="title" style="font-size:128px;">
+        <span class="ln">"학교마다</span>
+        <span class="ln"><span class="blue">내신이 다르다</span>?"</span>
+      </h1>
+      <div class="caret"></div>
+      <p class="subtitle">같은 점수, <span class="blue">다른 등급</span></p>
+    </div>
+    <div class="cover-illust">
+      <img class="drop" src="images/gen-cover.png" alt="" style="width:720px;">
+    </div>
+  </div>
+</section>
+
+<!-- ===== 컷 2 · 수학 ===== -->
+<section class="card" id="cut-2">
+  <h2 class="title" style="margin-top:24px;">
+    <span class="ln">수학 <span class="blue">A비율</span>이</span>
+    <span class="ln">곧 경쟁 강도</span>
+  </h2>
+  <p class="subtitle" style="margin-top:24px;margin-bottom:30px;">미림여고 수학 A <span class="blue">53.4%</span></p>
+
+  <div class="mathwrap">
+    <svg class="drop" width="380" height="380" viewBox="0 0 300 300" style="flex:0 0 380px;">
+      <defs><linearGradient id="dn2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3D82F5"/><stop offset="1" stop-color="#1655C8"/></linearGradient></defs>
+      <circle cx="150" cy="150" r="110" fill="none" stroke="#E2E8F2" stroke-width="46"/>
+      <circle cx="150" cy="150" r="110" fill="none" stroke="url(#dn2)" stroke-width="46" stroke-dasharray="369 691" stroke-linecap="round" transform="rotate(-90 150 150)"/>
+      <text x="150" y="140" text-anchor="middle" font-family="Black Han Sans" font-size="60" fill="#1655C8">53.4%</text>
+      <text x="150" y="184" text-anchor="middle" font-size="27" font-weight="700" fill="#11244C">미림여고 A</text>
+    </svg>
+    <div class="scol">
+      <div class="sitem">
+        <div class="ic"><img src="images/ic-school.png" alt=""></div>
+        <div class="tx">성보고 <span class="blue">A 10.5%</span><small>평균 1위인데 A는 적음 — 중상위권 안정</small></div>
+      </div>
+      <div class="sitem">
+        <div class="ic"><img src="images/ic-chartup.png" alt=""></div>
+        <div class="tx">삼성고 <span class="blue">E 46.3%</span><small>양극화 — 상위권 유리, 기초학력 확인</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="concl-bar" style="margin-top:30px;">
+    <div class="cic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6m0 8v.01M5 12H2m20 0h-3M6.3 6.3 4 4m16 16-2.3-2.3"/><circle cx="12" cy="12" r="4"/></svg></div>
+    <div>평균보다 <span class="blue">A·E 비율</span>을 봐야 진짜 경쟁 강도가 보입니다</div>
+  </div>
+</section>
+
+<!-- ===== 컷 3 · 영어 ===== -->
+<section class="card" id="cut-3">
+  <h2 class="title" style="margin-top:24px;">
+    <span class="ln">영어는 차이가</span>
+    <span class="ln"><span class="blue">더 극단적</span></span>
+  </h2>
+  <p class="subtitle" style="margin-top:22px;margin-bottom:22px;">학교 따라 <span class="blue">유불리</span>가 갈린다</p>
+
+  <div class="cmp">
+    <div class="cmp-card">
+      <div class="cmp-head">영어 A 강세</div>
+      <img src="images/ic-people.png" alt="">
+      <div class="cmp-big">약 49%</div>
+      <div class="cmp-sub">인헌 · 영락고</div>
+      <div class="cmp-li"><span class="ck">✓</span>영어 잘하는 학생이 몰림</div>
+      <div class="cmp-li"><span class="ck">✓</span>최상위 경쟁 치열</div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-head">영어 E 높음</div>
+      <img src="images/ic-chartdown.png" alt="">
+      <div class="cmp-big">56.4%</div>
+      <div class="cmp-sub">신림고</div>
+      <div class="cmp-li"><span class="ck">✓</span>절반이 기초학력 수준</div>
+      <div class="cmp-li"><span class="ck">✓</span>70점대면 내신 유리</div>
+    </div>
+  </div>
+  <div class="concl-bar">
+    <div class="cic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div>같은 실력도 <span class="blue">학교 환경</span>이 등급을 바꾼다</div>
+  </div>
+</section>
+
+<!-- ===== 컷 4 · CTA ===== -->
+<section class="card" id="cut-4" style="align-items:center;padding-top:34px;">
+  <div class="cta-head">
+    <img class="hero" src="images/cta-hero.png" alt="생각탐구">
+  </div>
+
+  <a class="lcard" href="https://blog.naver.com/yylab" target="_blank" rel="noopener">
+    <div class="bi blog">blog</div>
+    <div class="ltx">최신 입시 분석자료, 수업이 궁금하면<br><b>블로그</b>를 통해 더 알아보기</div>
+    <img class="lqr" src="images/qr-blog.png" alt="블로그 QR">
+  </a>
+  <a class="lcard" href="https://open.kakao.com/o/sjRc4Keh" target="_blank" rel="noopener">
+    <div class="bi talk">TALK</div>
+    <div class="ltx">상담 및 수업 문의는 <b>카카오 오픈채팅</b>으로<br>문자·전화: <b>010-2436-9019</b></div>
+    <img class="lqr" src="images/qr-kakao.png" alt="카카오 오픈채팅 QR">
+  </a>
+
+  <div class="tags">
+    <span class="tag">#탐구보고서</span><span class="tag">#수행평가대비</span><span class="tag">#독서와탐구</span><span class="tag">#생기부컨설팅</span><span class="tag">#수시정시컨설팅</span>
+  </div>
+</section>
+
+<script>
+  function widestLine(t){ var w=0; t.querySelectorAll('.ln').forEach(function(l){ if(l.scrollWidth>w) w=l.scrollWidth; }); return w; }
+  // 폭 꽉 채우기(확대) + 넘치면 축소
+  function fillW(t, maxfs, ratio){
+    var avail=t.clientWidth*(ratio||0.97), g=0;
+    var fs=parseFloat(getComputedStyle(t).fontSize);
+    while(widestLine(t)<avail && fs<maxfs && g++<200){ fs+=2; t.style.fontSize=fs+'px'; }
+    while(widestLine(t)>avail && fs>40 && g++<400){ fs-=2; t.style.fontSize=fs+'px'; }
+  }
+  // 축소만(넘칠 때만)
+  function shrinkW(t, min){
+    var avail=t.clientWidth, g=0; var fs=parseFloat(getComputedStyle(t).fontSize);
+    while(widestLine(t)>avail && fs>(min||40) && g++<200){ fs-=2; t.style.fontSize=fs+'px'; }
+  }
+  // 표지: 제목 폭 꽉 채움
+  var coverT=document.querySelector('#cut-1 .title'); if(coverT) fillW(coverT, 200, 0.98);
+  // 데이터 컷: 제목도 폭 꽉 채워 크게 (레퍼런스처럼)
+  document.querySelectorAll('#cut-2 .title, #cut-3 .title').forEach(function(t){ fillW(t, 116, 0.97); });
+</script>
+</body>
+</html>

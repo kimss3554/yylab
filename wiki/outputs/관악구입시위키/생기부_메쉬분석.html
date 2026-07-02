@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>생기부 메쉬 분석 리포트 | 생각탐구</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0F172A; --card:#1E293B; --card2:#243044;
+  --border:rgba(255,255,255,0.08); --text:#E2E8F0; --muted:#94A3B8;
+  --gold:#F59E0B; --gold2:#D97706;
+  --g1:#2563EB; --g2:#4F46E5; --g3:#7C3AED;
+  --book:#059669; --red:#EF4444;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+
+/* TOP BAR */
+.topbar{background:rgba(15,23,42,.97);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;backdrop-filter:blur(8px);}
+.topbar .logo{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.5px;white-space:nowrap;}
+.topbar h1{font-size:15px;font-weight:700;color:#fff;flex:1;}
+.mf{display:flex;flex-direction:column;gap:1px;}
+.mf label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.mf input{background:var(--card);border:1px solid var(--border);color:#fff;padding:4px 8px;border-radius:4px;font-family:inherit;font-size:13px;width:130px;}
+.mf input:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+.btn{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s;}
+.btn-gold{background:var(--gold);color:#1C1008;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-out{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-out:hover{border-color:var(--gold);color:var(--gold);}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:290px 1fr;height:calc(100vh - 49px);}
+
+/* INPUT PANEL */
+.ipanel{background:var(--card);border-right:1px solid var(--border);overflow-y:auto;padding:14px;transition:all .2s;}
+.ipanel::-webkit-scrollbar{width:3px;}
+.ipanel::-webkit-scrollbar-thumb{background:var(--border);}
+.ptitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.gtabs{display:flex;gap:3px;margin-bottom:10px;}
+.gtab{flex:1;padding:5px;text-align:center;border-radius:5px;cursor:pointer;font-size:11px;font-weight:700;border:1px solid transparent;color:var(--muted);background:transparent;font-family:inherit;}
+.gtab.g1.on{background:var(--g1);color:#fff;border-color:#60A5FA;}
+.gtab.g2.on{background:var(--g2);color:#fff;border-color:#818CF8;}
+.gtab.g3.on{background:var(--g3);color:#fff;border-color:#A78BFA;}
+.gtab:not(.on):hover{border-color:var(--border);color:var(--text);}
+.gpanel{display:none;}
+.gpanel.on{display:block;}
+.sitem{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:9px;margin-bottom:7px;}
+.shead{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.sname{font-size:11px;font-weight:700;}
+.sdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;}
+.sdel:hover{color:var(--red);}
+.fl{font-size:10px;color:var(--muted);margin-bottom:2px;display:block;}
+input[type=text]{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:11px;padding:4px 7px;margin-bottom:4px;}
+input[type=text]::placeholder{color:var(--muted);}
+input[type=text]:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:inherit;font-size:11px;line-height:1.5;padding:5px 7px;resize:vertical;min-height:55px;}
+textarea::placeholder{color:var(--muted);}
+textarea:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+.addbtn{width:100%;padding:6px;background:transparent;border:1px dashed rgba(255,255,255,.15);border-radius:5px;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;margin-top:2px;}
+.addbtn:hover{border-color:var(--gold);color:var(--gold);}
+.buildbtn{width:100%;padding:9px;margin-top:14px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);border:none;border-radius:7px;color:#1C1008;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.buildbtn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* MAIN */
+.mpanel{overflow-y:auto;padding:16px;}
+.slabel{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+
+/* MESH BOX */
+.meshbox{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;position:relative;}
+.meshhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.meshtitle{font-size:17px;font-weight:700;color:#fff;}
+.meshsub{font-size:12px;color:var(--muted);margin-top:3px;}
+.badges{display:flex;gap:6px;flex-wrap:wrap;}
+.badge{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.bd{background:rgba(99,102,241,.2);color:#A5B4FC;border:1px solid rgba(99,102,241,.3);}
+.bc{background:rgba(245,158,11,.2);color:#FCD34D;border:1px solid rgba(245,158,11,.3);}
+.bv{background:rgba(16,185,129,.2);color:#6EE7B7;border:1px solid rgba(16,185,129,.3);}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.ld{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+#meshSvg{width:100%;height:460px;border-radius:7px;background:linear-gradient(160deg,#0D1B30 0%,#0F172A 100%);}
+
+/* NODE DETAIL */
+.ndetail{display:none;position:absolute;top:70px;right:20px;width:250px;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:12px;z-index:20;box-shadow:0 20px 40px rgba(0,0,0,.5);}
+.ndetail.show{display:block;}
+.dtitle{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.dgrade{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.dtext{font-size:11px;line-height:1.65;color:var(--text);border-left:2px solid var(--gold);padding-left:8px;margin-bottom:8px;}
+.dbooks{display:flex;flex-wrap:wrap;gap:3px;}
+.btag{padding:2px 7px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25);border-radius:4px;font-size:10px;color:#6EE7B7;}
+.dclose{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;}
+
+/* SCORES */
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;}
+.slb{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.slb span{font-size:15px;}
+.sv{font-size:26px;font-weight:900;line-height:1;margin-bottom:7px;}
+.sbar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+.sfill{height:100%;border-radius:2px;transition:width .8s ease;}
+.sdesc{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.45;}
+
+/* ALGO */
+.arow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.astep{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:10px;position:relative;}
+.astep::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;}
+.astep:last-child::after{display:none;}
+.anum{font-size:10px;font-weight:700;color:var(--gold);margin-bottom:3px;}
+.aname{font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
+.adesc{font-size:10px;color:var(--muted);line-height:1.4;}
+
+/* COMPETENCY */
+.crow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:13px;text-align:center;}
+.cicon{font-size:22px;margin-bottom:6px;}
+.ctitle{font-size:12px;font-weight:700;color:#fff;margin-bottom:6px;}
+.citems{list-style:none;}
+.citems li{font-size:10px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border);}
+.citems li:last-child{border:none;}
+
+.tooltip{position:fixed;background:rgba(15,23,42,.97);border:1px solid var(--border);border-radius:5px;padding:6px 10px;font-size:11px;color:#fff;pointer-events:none;z-index:1000;max-width:190px;display:none;}
+
+@media print{
+  body{background:#fff;color:#111;}
+  .ipanel{display:none;}
+  .layout{grid-template-columns:1fr;height:auto;}
+  .topbar .btn{display:none;}
+  .ndetail{display:none!important;}
+  .meshbox{break-inside:avoid;}
+  @page{size:A4 landscape;margin:12mm;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">생각탐구 · 입시분석</div>
+  <h1>생기부 메쉬 분석 리포트</h1>
+  <div class="mf"><label>학생명</label><input type="text" id="studentName" value="[데모] 서울대 합격생" placeholder="학생명"></div>
+  <div class="mf"><label>목표 전공</label><input type="text" id="majorName" value="경영학과 (서울대)" placeholder="전공"></div>
+  <div class="mf"><label>분석일</label><input type="text" id="analysisDate" value="2026-06-30" style="width:95px;"></div>
+  <button class="btn btn-out" onclick="togglePanel()">☰ 입력</button>
+  <button class="btn btn-gold" onclick="printReport()">⎙ 출력</button>
+</div>
+
+<div class="layout">
+  <!-- INPUT PANEL -->
+  <div class="ipanel" id="ipanel">
+    <div class="ptitle">학생 데이터 입력</div>
+    <div class="gtabs">
+      <button class="gtab g1 on" onclick="switchG(1)">1학년</button>
+      <button class="gtab g2" onclick="switchG(2)">2학년</button>
+      <button class="gtab g3" onclick="switchG(3)">3학년</button>
+    </div>
+    <div class="gpanel on" id="gp1"><div id="s1"></div><button class="addbtn" onclick="addS(1)">+ 과목 추가</button></div>
+    <div class="gpanel" id="gp2"><div id="s2"></div><button class="addbtn" onclick="addS(2)">+ 과목 추가</button></div>
+    <div class="gpanel" id="gp3"><div id="s3"></div><button class="addbtn" onclick="addS(3)">+ 과목 추가</button></div>
+    <button class="buildbtn" onclick="buildMesh()">메쉬 분석 생성 ▶</button>
+  </div>
+
+  <!-- MAIN PANEL -->
+  <div class="mpanel">
+    <!-- MESH -->
+    <div class="meshbox">
+      <div class="meshhead">
+        <div>
+          <div class="meshtitle" id="meshTitle">경영학과 — 전공 역량 메쉬 네트워크</div>
+          <div class="meshsub">3년 생기부의 심화·연관·융합 구조 시각화</div>
+        </div>
+        <div class="badges">
+          <span class="badge bd" id="badgeD">심화 ★★★★☆</span>
+          <span class="badge bc" id="badgeC">연관 ★★★★★</span>
+          <span class="badge bv" id="badgeV">융합 ★★★★☆</span>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="li"><div class="ld" style="background:#2563EB"></div>1학년 Foundation</div>
+        <div class="li"><div class="ld" style="background:#6366F1"></div>2학년 Depth</div>
+        <div class="li"><div class="ld" style="background:#8B5CF6"></div>3학년 Mastery</div>
+        <div class="li"><div class="ld" style="background:#F59E0B"></div>목표 전공</div>
+        <div class="li"><div class="ld" style="background:#10B981"></div>도서 연계</div>
+      </div>
+      <svg id="meshSvg" viewBox="0 0 940 440" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gMajor" cx="50%" cy="50%"><stop offset="0%" stop-color="#FDE68A"/><stop offset="100%" stop-color="#92400E"/></radialGradient>
+          <radialGradient id="gG1" cx="50%" cy="50%"><stop offset="0%" stop-color="#93C5FD"/><stop offset="100%" stop-color="#1D4ED8"/></radialGradient>
+          <radialGradient id="gG2" cx="50%" cy="50%"><stop offset="0%" stop-color="#A5B4FC"/><stop offset="100%" stop-color="#4338CA"/></radialGradient>
+          <radialGradient id="gG3" cx="50%" cy="50%"><stop offset="0%" stop-color="#C4B5FD"/><stop offset="100%" stop-color="#6D28D9"/></radialGradient>
+          <radialGradient id="gBook" cx="50%" cy="50%"><stop offset="0%" stop-color="#6EE7B7"/><stop offset="100%" stop-color="#065F46"/></radialGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glowG"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g id="mg"></g>
+      </svg>
+      <div class="ndetail" id="ndetail">
+        <button class="dclose" onclick="closeD()">✕</button>
+        <div class="dtitle" id="dtitle"></div>
+        <div class="dgrade" id="dgrade"></div>
+        <div class="dtext" id="dtext"></div>
+        <div class="dbooks" id="dbooks"></div>
+      </div>
+    </div>
+
+    <!-- SCORES -->
+    <div class="slabel">3대 설계 키워드 평가</div>
+    <div class="srow">
+      <div class="sc">
+        <div class="slb"><span>🔬</span> 심화 (Depth)</div>
+        <div class="sv" id="sD" style="color:#818CF8">4.2</div>
+        <div class="sbar"><div class="sfill" id="fD" style="background:#6366F1;width:84%"></div></div>
+        <div class="sdesc">수업 내용 → 도서 탐독 → 수행평가·실험으로 3단계 심화. 외부 개념을 교과에 내면화하는 탐구력 우수.</div>
+      </div>
+      <div class="sc">
+        <div class="slb"><span>🔗</span> 연관 (Connection)</div>
+        <div class="sv" id="sC" style="color:#FCD34D">4.6</div>
+        <div class="sbar"><div class="sfill" id="fC" style="background:#F59E0B;width:92%"></div></div>
+        <div class="sdesc">수학·경제·사회 세특이 '경영'이라는 단일 전공 키워드로 수렴. 교과-전공 연계성 매우 우수.</div>
+      </div>
+      <div class="sc">
+        <div class="slb"><span>⚡</span> 융합 (Convergence)</div>
+        <div class="sv" id="sV" style="color:#6EE7B7">4.0</div>
+        <div class="sbar"><div class="sfill" id="fV" style="background:#10B981;width:80%"></div></div>
+        <div class="sdesc">수학(모델링)+사회(시사)+영어(글로벌)의 교과 간 융합. 비주력 과목(일어)도 전공 연계 융합 시도.</div>
+      </div>
+    </div>
+
+    <!-- ALGO -->
+    <div class="slabel">문제 해결 알고리즘 — 최상위권 세특의 4단계 구조</div>
+    <div class="arow">
+      <div class="astep"><div class="anum">STEP 1</div><div class="aname">의문 제기</div><div class="adesc">수업 중 핵심 이론에서 '기능적 호기심' 출발. 조건부 사고, 탐구 씨앗.</div></div>
+      <div class="astep"><div class="anum">STEP 2</div><div class="aname">지식 확장</div><div class="adesc">관련 도서·논문 자발적 탐독. 교과 개념을 실제 현상에 연결.</div></div>
+      <div class="astep"><div class="anum">STEP 3</div><div class="aname">현실 적용</div><div class="adesc">전공 관련 이슈(공급망, ESG 등)에 학습 내용 적용·발표·보고서.</div></div>
+      <div class="astep"><div class="anum">STEP 4</div><div class="aname">새로운 질문</div><div class="adesc">다음 학기·학년으로 이어지는 더 깊은 탐구 주제로 진화.</div></div>
+    </div>
+
+    <!-- COMPETENCY -->
+    <div class="slabel">3대 역량 분석 (학업 · 진로 · 공동체)</div>
+    <div class="crow">
+      <div class="cc"><div class="cicon">📚</div><div class="ctitle">학업 역량</div><ul class="citems" id="c1"><li>수학I·II — 지수·미적분 모델링</li><li>경제 — 공급망·시장 분석</li><li>확률과통계 — 데이터 분석</li><li>원점수 96~99점 / 1~2등급</li></ul></div>
+      <div class="cc"><div class="cicon">🎯</div><div class="ctitle">진로 역량</div><ul class="citems" id="c2"><li>ESG·지속가능경영 탐구</li><li>스타트업 창업 프로젝트</li><li>Fast Fashion 대안 제시</li><li>지방소멸 관광 비즈니스</li></ul></div>
+      <div class="cc"><div class="cicon">🤝</div><div class="ctitle">공동체 역량</div><ul class="citems" id="c3"><li>협업·소통·리더십</li><li>수업 중 발표·토론 기여</li><li>팀 프로젝트 주도</li><li>일어 — 지역공동경제 탐구</li></ul></div>
+    </div>
+    <div style="height:30px"></div>
+  </div>
+</div>
+
+<div class="tooltip" id="tip"></div>
+
+<script>
+// ────────── DEMO DATA ──────────
+const DEMO = {
+  g1:[
+    {s:'수학I',t:'박테리아 증식 과정을 지수함수로 모델링하고, 항생제 투여 후 개체 수 감소 속도를 로그함수로 설명. 수리적 모델링이 경영 데이터 분석의 기초임을 자각.',books:['블랙스완'],tags:['경제수학','모델링','데이터분석']},
+    {s:'사회(통합)',t:'MZ세대 소비 동향을 분석하고 반도체 공급망 위기를 조사. 글로벌 경제 변화를 능동적으로 이해. 기업 CSR의 사회적 책임 개념 적용.',books:['제로 투 원'],tags:['마케팅','CSR','글로벌경제']},
+    {s:'영어',t:'기업 지속가능성(ESG) 보고서를 영어로 읽고 요약. 글로벌 비즈니스 커뮤니케이션의 중요성 체감. 원어 경영용어 실용적 학습.',books:[],tags:['ESG','글로벌','비즈니스영어']}
+  ],
+  g2:[
+    {s:'경제',t:'국제무역과 보호무역 논쟁 학습 후 반도체 공급망 위기를 조사. 블랙스완 개념을 경제 불확실성 분석에 적용. 글로벌 시장 분석 능력 심화.',books:['블랙스완'],tags:['공급망','무역정책','경제분석']},
+    {s:'확률과통계',t:'MZ세대 집단 동의사와 팬덤 문화가 마케팅 전략에 반영되는 과정을 통계적으로 분석. 데이터 기반 마케팅 효과 검증 보고서 작성.',books:[],tags:['데이터분석','마케팅통계','소비자행동']},
+    {s:'사회문화',t:'지니계수·기업 이익 배분 과정에 담긴 기능론적 논의를 ESG 관점에서 분석. 공정 분배와 지속가능경영의 접점 연구.',books:['이웃집 백만장자'],tags:['ESG','소득분배','기업윤리']},
+    {s:'일본어I',t:'지방 소멸 문제와 청년 인구 유출 원인을 일본 소도시 관광 산업과 한국 농촌 사례로 비교. 지역 공동경제가 지방소멸 대안임을 발견.',books:[],tags:['지방소멸','관광비즈니스','지역경제']}
+  ],
+  g3:[
+    {s:'영어 독해와 작문',t:'Fast Fashion & Sustainable Future 주제 글을 읽고 원인과 대안을 균형 있게 서술. 글로벌 지속가능 경영의 실천 방안을 영어 에세이로 제안.',books:[],tags:['지속가능경영','ESG','글로벌전략']},
+    {s:'화법과 작문',t:'지역 경제와 공동체 가치를 결합한 설득 글쓰기. 문제의식(지방소멸)에서 대안(관광 비즈니스 모델) 제시까지 완성. 3년 탐구의 결론.',books:['이웃집 경제학자'],tags:['지역경제','커뮤니케이션','대안제시']},
+    {s:'수학II/미적분',t:'경제 성장률 모델링에 미적분 적용. 지수·로그 함수로 기업 이익 변화율 분석. 수리 모델이 경영 의사결정 도구임을 증명.',books:[],tags:['경제수학','성장모델','미적분응용']}
+  ]
+};
+
+// ────────── STATE ──────────
+let counters={1:0,2:0,3:0};
+let nodeMap={};
+
+// ────────── INIT ──────────
+function init(){
+  [1,2,3].forEach(g=>{
+    DEMO['g'+g].forEach(d=>addSwD(g,d));
+  });
+  buildMesh();
+}
+
+// ────────── INPUT PANEL ──────────
+function switchG(g){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.gpanel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.gtab')[g-1].classList.add('on');
+  document.getElementById('gp'+g).classList.add('on');
+}
+function togglePanel(){
+  const p=document.getElementById('ipanel');
+  const lay=document.querySelector('.layout');
+  if(p.style.display==='none'){p.style.display='';lay.style.gridTemplateColumns='290px 1fr';}
+  else{p.style.display='none';lay.style.gridTemplateColumns='1fr';}
+}
+function addS(g){addSwD(g,{s:'',t:'',books:[],tags:[]});}
+function addSwD(g,d){
+  const id=++counters[g];
+  const box=document.getElementById('s'+g);
+  const gc=['#60A5FA','#818CF8','#A78BFA'][g-1];
+  const div=document.createElement('div');
+  div.className='sitem';div.dataset.id=id;
+  div.innerHTML=`<div class="shead"><div class="sname" style="color:${gc}">■ 과목 ${id}</div><button class="sdel" onclick="rmS(${g},${id})">✕</button></div>
+<label class="fl">과목명</label><input type="text" placeholder="예: 수학I" value="${esc(d.s)}" data-f="s">
+<label class="fl">세부 능력 및 특기 사항</label><textarea rows="4" placeholder="세특 내용…" data-f="t">${esc(d.t)}</textarea>
+<label class="fl">관련 도서 (쉼표 구분)</label><input type="text" placeholder="예: 블랙스완, 제로 투 원" value="${esc((d.books||[]).join(', '))}" data-f="b">
+<label class="fl">핵심 태그 (쉼표 구분)</label><input type="text" placeholder="예: 데이터분석, ESG" value="${esc((d.tags||[]).join(', '))}" data-f="g">`;
+  box.appendChild(div);
+}
+function rmS(g,id){const c=document.getElementById('s'+g);const i=c.querySelector('[data-id="'+id+'"]');if(i)i.remove();}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function collect(){
+  const d={g1:[],g2:[],g3:[]};
+  [1,2,3].forEach(g=>{
+    document.getElementById('s'+g).querySelectorAll('.sitem').forEach(item=>{
+      const s=item.querySelector('[data-f=s]').value.trim();if(!s)return;
+      const t=item.querySelector('[data-f=t]').value.trim();
+      const b=item.querySelector('[data-f=b]').value.trim();
+      const tg=item.querySelector('[data-f=g]').value.trim();
+      d['g'+g].push({s,t,books:b?b.split(',').map(x=>x.trim()).filter(Boolean):[],tags:tg?tg.split(',').map(x=>x.trim()).filter(Boolean):[]});
+    });
+  });
+  return d;
+}
+
+// ────────── MESH BUILD ──────────
+function buildMesh(){
+  const data=collect();
+  const maj=document.getElementById('majorName').value||'전공';
+  const majShort=maj.replace(/\s*\(.*\)/,'');
+  document.getElementById('meshTitle').textContent=majShort+' — 전공 역량 메쉬 네트워크';
+  drawMesh(data,maj);
+  updateScores(data);
+}
+
+const W=940,H=440;
+const MX=590,MY=220; // major node center
+
+function drawMesh(data,maj){
+  const g=document.getElementById('mg');
+  g.innerHTML='';
+  nodeMap={};
+
+  // Column x positions
+  const X1=110,X2=320,X3=800;
+
+  const n1=posNodes(data.g1,X1);
+  const n2=posNodes(data.g2,X2);
+  const n3=posNodes(data.g3,X3);
+
+  drawBg(g);
+  drawColHeaders(g,X1,X2,X3,maj);
+
+  // Grade→major connection lines (drawn first, behind nodes)
+  n1.forEach(n=>drawToMajor(g,n,1));
+  n2.forEach(n=>drawToMajor(g,n,2));
+  n3.forEach(n=>drawToMajor(g,n,3));
+
+  // Inter-grade progression lines
+  for(let i=0;i<Math.max(n1.length,n2.length,n3.length);i++){
+    if(n1[i]&&n2[i]) drawCurve(g,n1[i].x,n1[i].y,n2[i].x,n2[i].y,'rgba(59,130,246,.2)',1,true);
+    if(n2[i]&&n3[i]) drawCurve(g,n2[i].x,n2[i].y,n3[i].x,n3[i].y,'rgba(99,102,241,.2)',1,true);
+  }
+
+  // Book nodes + lines
+  const books=[];
+  [...n1,...n2,...n3].forEach(n=>{
+    (n.books||[]).forEach((bk,bi)=>{
+      const bx=n.x+(bi%2===0?-55:55);
+      const by=n.y+32+bi*16;
+      books.push({x:bx,y:by,name:bk,parent:n});
+      const bl=mkSVG('line',{x1:bx,y1:by,x2:n.x,y2:n.y,stroke:'rgba(16,185,129,.35)','stroke-width':'0.8','stroke-dasharray':'3,4'});
+      g.appendChild(bl);
+    });
+  });
+
+  // Draw grade nodes
+  n1.forEach(n=>drawNode(g,n,1));
+  n2.forEach(n=>drawNode(g,n,2));
+  n3.forEach(n=>drawNode(g,n,3));
+
+  // Draw book nodes
+  books.forEach(b=>drawBook(g,b));
+
+  // Major keyword tags (top unique tags)
+  const allTags=[];
+  ['g1','g2','g3'].forEach(k=>data[k].forEach(s=>{allTags.push(...(s.tags||[]));  }));
+  const uTags=[...new Set(allTags)].slice(0,7);
+  drawMajorTags(g,uTags);
+
+  // Major node (on top)
+  drawMajor(g,maj);
+}
+
+function posNodes(arr,x){
+  if(!arr.length) return [];
+  const spacing=Math.min(85,(H-80)/arr.length);
+  const startY=(H-(arr.length-1)*spacing)/2;
+  return arr.map((d,i)=>({...d,x,y:startY+i*spacing}));
+}
+
+function drawBg(g){
+  [215,455,695].forEach(x=>{
+    const l=mkSVG('line',{x1:x,y1:25,x2:x,y2:H-10,stroke:'rgba(255,255,255,.04)','stroke-width':'1','stroke-dasharray':'3,7'});
+    g.appendChild(l);
+  });
+}
+
+function drawColHeaders(g,x1,x2,x3,maj){
+  const hdr=[
+    {x:x1,l:'1학년',sl:'Foundation',c:'#60A5FA'},
+    {x:x2,l:'2학년',sl:'Depth',c:'#818CF8'},
+    {x:MX,l:maj.replace(/\s*\(.*\)/,'').replace('학과',''),sl:'전공',c:'#FCD34D'},
+    {x:x3,l:'3학년',sl:'Mastery',c:'#C4B5FD'}
+  ];
+  hdr.forEach(h=>{
+    const grp=mkSVG('g');
+    const rx=mkSVG('rect',{x:h.x-38,y:6,width:76,height:22,rx:4,fill:'rgba(255,255,255,.05)',stroke:'rgba(255,255,255,.09)','stroke-width':'0.5'});
+    const t1=mkSVG('text',{x:h.x,y:19,'text-anchor':'middle','font-size':'10',fill:h.c,'font-weight':'700','font-family':'Noto Sans KR,sans-serif'});
+    t1.textContent=h.l;
+    const t2=mkSVG('text',{x:h.x,y:35,'text-anchor':'middle','font-size':'8.5',fill:'rgba(255,255,255,.3)','font-family':'Noto Sans KR,sans-serif'});
+    t2.textContent=h.sl;
+    grp.appendChild(rx);grp.appendChild(t1);grp.appendChild(t2);
+    g.appendChild(grp);
+  });
+}
+
+function drawToMajor(g,n,grade){
+  const colors=['rgba(59,130,246,.25)','rgba(99,102,241,.28)','rgba(139,92,246,.38)'];
+  const c=colors[grade-1]||colors[0];
+  const w=grade===3?1.5:1;
+  drawCurve(g,n.x,n.y,MX,MY,c,w,false);
+}
+
+function drawCurve(g,x1,y1,x2,y2,col,sw,dashed){
+  const cx=(x1+x2)/2,cy=Math.min(y1,y2)-30+(Math.abs(y1-y2)*.1);
+  const p=mkSVG('path',{d:`M${x1},${y1} Q${cx},${cy} ${x2},${y2}`,fill:'none',stroke:col,'stroke-width':sw,'stroke-dasharray':dashed?'4,6':'none'});
+  g.appendChild(p);
+}
+
+function drawNode(g,n,grade){
+  const R=24;
+  const fills=['url(#gG1)','url(#gG2)','url(#gG3)'];
+  const strokes=['#60A5FA','#818CF8','#C4B5FD'];
+  const grp=mkSVG('g',{cursor:'pointer'});
+  grp.addEventListener('click',()=>showD(n,grade));
+  grp.addEventListener('mouseenter',e=>showTip(e,n.s,n.tags));
+  grp.addEventListener('mouseleave',hideTip);
+
+  const ring=mkSVG('circle',{cx:n.x,cy:n.y,r:R+5,fill:'none',stroke:strokes[grade-1],'stroke-width':'0.5',opacity:'0.35'});
+  const circ=mkSVG('circle',{cx:n.x,cy:n.y,r:R,fill:fills[grade-1],stroke:strokes[grade-1],'stroke-width':'1.5',filter:'url(#glow)'});
+
+  const parts=splitTxt(n.s,7);
+  parts.forEach((pt,pi)=>{
+    const t=mkSVG('text',{x:n.x,y:n.y-(parts.length-1)*6.5+pi*13,'text-anchor':'middle','dominant-baseline':'middle','font-size':'9.5',fill:'#fff','font-weight':'700','font-family':'Noto Sans KR,sans-serif'});
+    t.textContent=pt;
+    grp.appendChild(t);
+  });
+
+  grp.insertBefore(ring,grp.firstChild);
+  grp.insertBefore(circ,grp.firstChild);
+  g.appendChild(grp);
+  nodeMap[n.s]=n;
+}
+
+function drawBook(g,b){
+  const R=13;
+  const grp=mkSVG('g',{cursor:'pointer'});
+  grp.addEventListener('mouseenter',e=>showTip(e,'📚 '+b.name,[]));
+  grp.addEventListener('mouseleave',hideTip);
+  const circ=mkSVG('circle',{cx:b.x,cy:b.y,r:R,fill:'url(#gBook)',stroke:'#34D399','stroke-width':'1'});
+  const nm=b.name.length>5?b.name.slice(0,4)+'…':b.name;
+  const t=mkSVG('text',{x:b.x,y:b.y,'text-anchor':'middle','dominant-baseline':'middle','font-size':'7.5',fill:'#fff','font-weight':'600','font-family':'Noto Sans KR,sans-serif'});
+  t.textContent=nm;
+  grp.appendChild(circ);grp.appendChild(t);
+  g.appendChild(grp);
+}
+
+function drawMajor(g,maj){
+  const R=38;
+  const grp=mkSVG('g');
+  [R+20,R+11].forEach((r,i)=>{
+    const rng=mkSVG('circle',{cx:MX,cy:MY,r:r,fill:'none',stroke:`rgba(245,158,11,${.12-i*.04})`,'stroke-width':'1'});
+    grp.appendChild(rng);
+  });
+  const circ=mkSVG('circle',{cx:MX,cy:MY,r:R,fill:'url(#gMajor)',stroke:'#FCD34D','stroke-width':'2',filter:'url(#glowG)'});
+  const majShort=maj.replace(/\s*\(.*\)/,'').replace('학과','').trim();
+  const sub=maj.match(/\((.*?)\)/)?.[1]||'';
+  const t1=mkSVG('text',{x:MX,y:MY-(sub?9:0),'text-anchor':'middle','dominant-baseline':'middle','font-size':'13',fill:'#FEF3C7','font-weight':'900','font-family':'Noto Sans KR,sans-serif'});
+  t1.textContent=majShort;
+  grp.appendChild(circ);grp.appendChild(t1);
+  if(sub){
+    const t2=mkSVG('text',{x:MX,y:MY+12,'text-anchor':'middle','dominant-baseline':'middle','font-size':'8.5',fill:'rgba(254,243,199,.7)','font-family':'Noto Sans KR,sans-serif'});
+    t2.textContent=sub;
+    grp.appendChild(t2);
+  }
+  g.appendChild(grp);
+}
+
+function drawMajorTags(g,tags){
+  const angles=[285,325,5,45,85,125,165].map(a=>a*Math.PI/180);
+  const dist=120;
+  tags.forEach((tag,i)=>{
+    const a=angles[i]||(i*51.4)*Math.PI/180;
+    const tx=MX+Math.cos(a)*dist,ty=MY+Math.sin(a)*dist;
+    const tw=Math.max(tag.length*7.5+12,48);
+    const grp=mkSVG('g');
+    const ln=mkSVG('line',{x1:tx,y1:ty,x2:MX,y2:MY,stroke:'rgba(245,158,11,.18)','stroke-width':'0.6','stroke-dasharray':'2,5'});
+    const rx=mkSVG('rect',{x:tx-tw/2,y:ty-10,width:tw,height:20,rx:10,fill:'rgba(245,158,11,.13)',stroke:'rgba(245,158,11,.3)','stroke-width':'0.8'});
+    const t=mkSVG('text',{x:tx,y:ty+1,'text-anchor':'middle','dominant-baseline':'middle','font-size':'9',fill:'#FCD34D','font-weight':'600','font-family':'Noto Sans KR,sans-serif'});
+    t.textContent=tag;
+    grp.appendChild(ln);grp.appendChild(rx);grp.appendChild(t);
+    g.appendChild(grp);
+  });
+}
+
+// ────────── SCORES ──────────
+function updateScores(data){
+  const DW=['심화','분석','탐구','연구','비교','모델링','조사','수행','탐독','활용'];
+  const CW=['전공','경영','비즈니스','경제','마케팅','ESG','지속가능','스타트업','창업','데이터','글로벌'];
+  const VW=['융합','연계','결합','통합','여러','교과','접목','연결','관련'];
+  let dc=0,cc=0,vc=0,tot=0;
+  ['g1','g2','g3'].forEach(k=>data[k].forEach(s=>{
+    const tx=(s.t+' '+(s.tags||[]).join(' ')).toLowerCase();
+    DW.forEach(w=>{if(tx.includes(w))dc++;});
+    CW.forEach(w=>{if(tx.includes(w))cc++;});
+    VW.forEach(w=>{if(tx.includes(w))vc++;});
+    tot++;
+  }));
+  if(!tot){setScore(3,3,3);return;}
+  const d=Math.min(5,1+(dc/(DW.length*tot))*32);
+  const c=Math.min(5,1+(cc/(CW.length*tot))*32);
+  const v=Math.min(5,1+(vc/(VW.length*tot))*40);
+  setScore(d,c,v);
+}
+function setScore(d,c,v){
+  document.getElementById('sD').textContent=d.toFixed(1);
+  document.getElementById('sC').textContent=c.toFixed(1);
+  document.getElementById('sV').textContent=v.toFixed(1);
+  document.getElementById('fD').style.width=(d/5*100)+'%';
+  document.getElementById('fC').style.width=(c/5*100)+'%';
+  document.getElementById('fV').style.width=(v/5*100)+'%';
+  document.getElementById('badgeD').textContent='심화 '+stars(d);
+  document.getElementById('badgeC').textContent='연관 '+stars(c);
+  document.getElementById('badgeV').textContent='융합 '+stars(v);
+}
+function stars(s){const r=Math.round(s);return'★'.repeat(r)+'☆'.repeat(5-r);}
+
+// ────────── DETAIL ──────────
+function showD(n,grade){
+  const gl=['1학년 Foundation','2학년 Depth','3학년 Mastery'];
+  document.getElementById('dtitle').textContent=n.s;
+  document.getElementById('dgrade').textContent=gl[grade-1];
+  document.getElementById('dtext').textContent=n.t||'세특 내용 없음';
+  const bk=document.getElementById('dbooks');bk.innerHTML='';
+  (n.books||[]).forEach(b=>{const s=document.createElement('span');s.className='btag';s.textContent='📚 '+b;bk.appendChild(s);});
+  document.getElementById('ndetail').classList.add('show');
+}
+function closeD(){document.getElementById('ndetail').classList.remove('show');}
+
+// ────────── TOOLTIP ──────────
+function showTip(e,name,tags){
+  const t=document.getElementById('tip');
+  t.innerHTML='<strong>'+name+'</strong>'+(tags&&tags.length?'<br><span style="color:#94A3B8;font-size:10px">'+tags.join(' · ')+'</span>':'');
+  t.style.display='block';
+  moveTip(e);
+}
+function moveTip(e){const t=document.getElementById('tip');t.style.left=(e.clientX+12)+'px';t.style.top=(e.clientY+10)+'px';}
+function hideTip(){document.getElementById('tip').style.display='none';}
+
+// ────────── SVG UTILS ──────────
+function mkSVG(tag,attrs={}){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+  return el;
+}
+function splitTxt(s,max){
+  if(!s||s.length<=max) return[s||'?'];
+  const mid=Math.ceil(s.length/2);
+  return[s.slice(0,mid),s.slice(mid)];
+}
+
+// ────────── PRINT ──────────
+function printReport(){
+  const name=document.getElementById('studentName').value;
+  const maj=document.getElementById('majorName').value;
+  const date=document.getElementById('analysisDate').value;
+  const svgEl=document.getElementById('meshSvg');
+  const svgStr=new XMLSerializer().serializeToString(svgEl);
+  const d=document.getElementById('sD').textContent;
+  const c=document.getElementById('sC').textContent;
+  const v=document.getElementById('sV').textContent;
+  const w=window.open('','_blank','width=1050,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>생기부 메쉬 분석 — ${name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#fff;color:#111;padding:14mm;}
+@page{size:A4 landscape;margin:10mm;}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2.5px solid #1C3D6B;padding-bottom:8px;margin-bottom:12px;}
+.hd h1{font-size:19px;font-weight:900;color:#1C3D6B;}
+.hd .sub{font-size:12px;color:#555;margin-top:3px;}
+.hd .rt{font-size:11px;color:#777;text-align:right;line-height:1.6;}
+.svgw{background:#0F172A;border-radius:7px;padding:10px;margin-bottom:12px;}
+.svgw svg{width:100%;display:block;}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
+.sc{border:1.5px solid #e2e8f0;border-radius:7px;padding:10px 12px;}
+.sl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
+.sv{font-size:22px;font-weight:900;margin-bottom:5px;}
+.sbar{height:4px;background:#f1f5f9;border-radius:2px;overflow:hidden;}
+.sf{height:100%;border-radius:2px;}
+.sd{font-size:10px;color:#94a3b8;margin-top:4px;line-height:1.4;}
+.foot{font-size:10px;color:#aaa;text-align:right;margin-top:8px;}
+</style></head><body>
+<div class="hd"><div><h1>생기부 메쉬 분석 리포트</h1><div class="sub">${name} &nbsp;·&nbsp; ${maj}</div></div>
+<div class="rt">생각탐구 입시연구소<br>${date}</div></div>
+<div class="svgw">${svgStr}</div>
+<div class="srow">
+  <div class="sc"><div class="sl">🔬 심화 (Depth)</div><div class="sv" style="color:#6366F1">${d}</div><div class="sbar"><div class="sf" style="background:#6366F1;width:${parseFloat(d)/5*100}%"></div></div><div class="sd">교과 내용을 탐구·실험·보고서로 3단계 심화</div></div>
+  <div class="sc"><div class="sl">🔗 연관 (Connection)</div><div class="sv" style="color:#D97706">${c}</div><div class="sbar"><div class="sf" style="background:#F59E0B;width:${parseFloat(c)/5*100}%"></div></div><div class="sd">교과별 세특이 단일 전공 키워드로 수렴</div></div>
+  <div class="sc"><div class="sl">⚡ 융합 (Convergence)</div><div class="sv" style="color:#059669">${v}</div><div class="sbar"><div class="sf" style="background:#10B981;width:${parseFloat(v)/5*100}%"></div></div><div class="sd">비주력 과목까지 전공 주제로 융복합 설계</div></div>
+</div>
+<div class="foot">생각탐구 교습소 | blog.naver.com/yylab | 3대 설계 키워드: 심화(Depth) · 연관(Connection) · 융합(Convergence)</div>
+</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),900);
+}
+
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
